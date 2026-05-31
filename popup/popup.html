@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Universal Translator</title>
+  <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+  <div class="container">
+    <div class="tabs">
+      <button class="tab active" data-tab="translate" data-i18n="tabTranslate">翻译</button>
+      <button class="tab" data-tab="settings" data-i18n="tabSettings">设置</button>
+      <button class="tab" data-tab="about" data-i18n="tabAbout">关于</button>
+    </div>
+
+    <!-- 翻译 Tab -->
+    <div class="tab-content active" id="tab-translate">
+      <div class="page-actions">
+        <button id="translateFullPage" class="btn-page">
+          <span class="btn-page-icon">🌐</span>
+          <span class="btn-page-text">
+            <strong data-i18n="translatePage">翻译整个页面</strong>
+            <small data-i18n="translatePageDesc">替换当前页面所有文字为译文</small>
+          </span>
+        </button>
+        <button id="translateFile" class="btn-page">
+          <span class="btn-page-icon">📄</span>
+          <span class="btn-page-text">
+            <strong data-i18n="translateFile">翻译当前文件</strong>
+            <small data-i18n="translateFileDesc">翻译 PDF / PPT / DOCX 内容</small>
+          </span>
+        </button>
+      </div>
+
+      <div class="divider"><span data-i18n="orInputText">或输入文本</span></div>
+
+      <div class="quick-translate">
+        <textarea id="inputText" data-i18n-placeholder="inputPlaceholder" placeholder="输入或粘贴要翻译的文本..." rows="3"></textarea>
+        <div class="lang-row">
+          <select id="sourceLang">
+            <option value="auto" data-i18n="autoDetect">自动检测</option>
+            <option value="English">English</option>
+            <option value="中文">中文</option>
+            <option value="日本語">日本語</option>
+            <option value="한국어">한국어</option>
+            <option value="Français">Français</option>
+            <option value="Deutsch">Deutsch</option>
+            <option value="Español">Español</option>
+            <option value="Русский">Русский</option>
+          </select>
+          <button id="swapLang" data-i18n-title="swapLang" title="交换语言">⇄</button>
+          <select id="targetLang">
+            <option value="中文">中文</option>
+            <option value="English">English</option>
+            <option value="日本語">日本語</option>
+            <option value="한국어">한국어</option>
+            <option value="Français">Français</option>
+            <option value="Deutsch">Deutsch</option>
+            <option value="Español">Español</option>
+            <option value="Русский">Русский</option>
+          </select>
+        </div>
+        <button id="translateBtn" class="btn-primary" data-i18n="translateBtn">翻译</button>
+        <div id="translateResult" class="result-box" hidden></div>
+      </div>
+    </div>
+
+    <!-- 设置 Tab -->
+    <div class="tab-content" id="tab-settings">
+      <div class="settings-group">
+        <h3 data-i18n="modelConfigTitle">模型配置</h3>
+        <label data-i18n="providerLabel">API 提供商</label>
+        <select id="provider">
+          <option value="openai">OpenAI 兼容 (OpenAI / DeepSeek / 通义千问 / 智谱等)</option>
+          <option value="anthropic">Anthropic Claude</option>
+          <option value="gemini">Google Gemini</option>
+        </select>
+        <label data-i18n="apiUrlLabel">API 地址</label>
+        <input type="url" id="apiUrl" placeholder="https://api.openai.com/v1">
+        <label data-i18n="apiKeyLabel">API Key</label>
+        <div class="password-row">
+          <input type="password" id="apiKey" placeholder="sk-...">
+          <button id="toggleKey" class="btn-icon" data-i18n-title="showHide" title="显示/隐藏">👁</button>
+        </div>
+        <label data-i18n="modelLabel">模型名称</label>
+        <div class="model-row">
+          <input type="text" id="model" placeholder="gpt-4o-mini" list="modelList">
+          <button id="refreshModels" class="btn-icon" data-i18n-title="refreshModels" title="刷新可用模型">🔄</button>
+        </div>
+        <datalist id="modelList"></datalist>
+        <label data-i18n="styleLabel">翻译风格</label>
+        <select id="style">
+          <option value="natural" data-i18n="styleNatural">自然流畅</option>
+          <option value="formal" data-i18n="styleFormal">正式专业</option>
+        </select>
+      </div>
+
+      <div class="settings-group">
+        <h3 data-i18n="pageTranslateLabel">页面翻译</h3>
+        <label data-i18n="shortcutLabel">快捷键</label>
+        <p class="hint"><span data-i18n="shortcutHint">选中文本后按</span> <kbd>Alt+T</kbd> <span data-i18n="shortcutHint2">快速翻译</span></p>
+        <label data-i18n="displayModeLabel">显示模式</label>
+        <select id="displayMode">
+          <option value="tooltip" data-i18n="displayModeTooltip">浮动提示框</option>
+          <option value="inline" data-i18n="displayModeInline">替换原文</option>
+          <option value="sidebar" data-i18n="displayModeSidebar">侧边栏</option>
+        </select>
+      </div>
+
+      <div class="actions">
+        <button id="testBtn" class="btn-secondary" data-i18n="testBtn">测试连接</button>
+        <button id="saveBtn" class="btn-primary" data-i18n="saveBtn">保存设置</button>
+      </div>
+      <div id="statusMsg" class="status-msg"></div>
+    </div>
+
+    <!-- 关于 Tab -->
+    <div class="tab-content" id="tab-about">
+      <div class="about">
+        <h3 data-i18n="aboutTitle">万能翻译器 v1.0.0</h3>
+        <p data-i18n="aboutDesc">支持翻译网页、PDF、PPT、DOCX等文件内容。</p>
+        <p data-i18n="aboutModels">可接入多种大模型：</p>
+        <ul>
+          <li>OpenAI GPT 系列</li>
+          <li>Anthropic Claude 系列</li>
+          <li>Google Gemini 系列</li>
+          <li>DeepSeek、通义千问、智谱等</li>
+        </ul>
+        <p class="hint" data-i18n="aboutUsage">使用方式：</p>
+        <ol>
+          <li data-i18n="aboutUsage1">选中文本 → 右键 → 翻译选中文本</li>
+          <li data-i18n="aboutUsage2">选中文本 → 按 Alt+T</li>
+          <li data-i18n="aboutUsage3">点击图标打开弹窗输入文本</li>
+        </ol>
+        <p class="hint" data-i18n="aboutPDF">PDF 支持：打开 PDF 文件后自动加载翻译工具</p>
+      </div>
+    </div>
+  </div>
+  <script src="../i18n.js"></script>
+  <script src="popup.js"></script>
