@@ -1,4 +1,4 @@
-# Universal Translator (万能翻译器)
+# Easy Translator
 
 A Chrome extension that translates web pages, PDF files, and Office documents using custom LLM backends (OpenAI, Anthropic Claude, Google Gemini, DeepSeek, Qwen, GLM, etc.).
 
