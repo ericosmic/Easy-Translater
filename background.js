@@ -200,29 +200,8 @@ async function extractTextFromPDF(arrayBuffer) {
   return textChunks.join('\n').replace(/\s+/g, ' ').trim();
 }
 
-// 监听标签页导航，检测PDF / Office文件 → 转为 HTML 查看
-chrome.webNavigation.onCommitted.addListener(async (details) => {
-  const url = details.url;
-  const lower = url.toLowerCase();
+// 打开 PDF 查看器（仅通过 popup 按钮手动触发）
 
-  // PDF 检测 → 打开自定义 viewer
-  if (lower.endsWith('.pdf') || lower.includes('.pdf#') || lower.includes('.pdf?')) {
-    await openPDFViewer(url, details.tabId);
-    return;
-  }
-
-  // Office 文件 → 提取文本后用 viewer 展示
-  if (lower.endsWith('.pptx') || lower.endsWith('.ppt') ||
-      lower.endsWith('.docx') || lower.endsWith('.doc')) {
-    await openOfficeViewer(url, details.tabId);
-  }
-}, { url: [
-  { urlSuffix: '.pdf' }, { urlContains: '.pdf#' }, { urlContains: '.pdf?' },
-  { urlSuffix: '.pptx' }, { urlSuffix: '.ppt' },
-  { urlSuffix: '.docx' }, { urlSuffix: '.doc' }
-]});
-
-// 打开 PDF 查看器
 async function openPDFViewer(fileUrl, tabId) {
   if (fileUrl.startsWith('file://')) {
     // 本地文件：后台读取后传入 viewer

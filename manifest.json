@@ -9,7 +9,6 @@
     "contextMenus",
     "activeTab",
     "scripting",
-    "webNavigation",
     "tabs"
   ],
   "host_permissions": [
