@@ -1,6 +1,6 @@
 # Easy Translator
 
-A Chrome extension that translates web pages, PDF files, and Office documents using custom LLM backends (OpenAI, Anthropic Claude, Google Gemini, DeepSeek, Qwen, GLM, etc.).
+A Chrome extension that translates web pages, PDF files, and Office documents using custom LLM backends (OpenAI, Anthropic Claude, Google Gemini, DeepSeek, Qwen, GLM, **Ollama local models**, etc.).
 
 ## Features
 
@@ -11,17 +11,23 @@ A Chrome extension that translates web pages, PDF files, and Office documents us
 - **Display modes** — floating tooltip, sidebar, or inline replacement
 - **Toggle original/translated** — switch between original text and translations after page translation
 - **Stop button** — cancel in-progress translation at any time
+- **Auto-recovery** — if extension is updated/reloaded, prompts to refresh the page automatically
 
 ### File Translation
 - **PDF translation** — opens PDFs in a custom viewer that renders pages as images with translation panels below each page, preserving exact layout
 - **Office files** — basic text extraction for PPTX, DOCX files
-- **Auto-detection** — automatically detects PDF/Office files when navigating and opens the viewer
+- **Manual viewer** — PDF/Office files are no longer auto-redirected; open via popup button only
 
 ### Translation Engine
 - **Parallel translation** — translates content in chunks using a concurrent worker pool (4 workers by default) for 4x speed improvement
 - **Batch translation** — uses numbered segment markers (`[#N]`) with LLM prompts for reliable batch processing
 - **Content-based chunking** — splits text into ~1000-character chunks following natural layout boundaries
-- **Multiple LLM backends** — supports OpenAI-compatible APIs, Anthropic Claude, and Google Gemini
+- **Multiple LLM backends** — supports OpenAI-compatible APIs, Anthropic Claude, Google Gemini, and **Ollama local models**
+
+### Local LLM (Ollama)
+- **No API key required** — connects to your local Ollama instance directly
+- **Auto model discovery** — fetches installed model list from Ollama automatically
+- **CORS configuration** — requires `OLLAMA_ORIGINS=*` environment variable
 
 ### Caching
 - **In-memory cache** (content script) — same-session toggle support, instant
@@ -30,6 +36,10 @@ A Chrome extension that translates web pages, PDF files, and Office documents us
 ### i18n / Localization
 - **Auto-detects browser language** — UI switches between English, Chinese (zh_CN), Japanese (ja), and Korean (ko) based on Chrome's language setting
 - All popup and viewer UI text is localized
+
+### UX
+- **Language auto-save** — switching source/target language in the popup immediately saves to storage, so selection translation respects the update without needing to click "Save Settings"
+- **API Key auto-hide** — selecting Ollama as provider hides the API Key field
 
 ## Architecture
 
@@ -67,6 +77,7 @@ A Chrome extension that translates web pages, PDF files, and Office documents us
 │      - OpenAI-compatible (GPT, DeepSeek, Qwen)  │
 │      - Anthropic Claude                         │
 │      - Google Gemini                            │
+│      - Ollama (local models)                    │
 │      - Batch mode with numbered segment markers │
 ├─────────────────────────────────────────────────┤
 │  background.js    Service worker                 │
@@ -99,8 +110,8 @@ A Chrome extension that translates web pages, PDF files, and Office documents us
 
 1. Open the extension popup
 2. Go to **Settings** tab
-3. Select your API provider (OpenAI-compatible, Anthropic, or Gemini)
-4. Enter your API URL and API Key
+3. Select your API provider (OpenAI-compatible, Anthropic, Gemini, or **Ollama**)
+4. Enter your API URL and API Key (not needed for Ollama)
 5. Choose a model
 6. Set source/target languages
 7. Click **Save Settings**
@@ -130,6 +141,14 @@ A Chrome extension that translates web pages, PDF files, and Office documents us
 ### Quick text translation
 - Open the extension popup → **Translate** tab
 - Type or paste text → click **Translate**
+- Languages are auto-saved when changed in the popup — no need to click "Save Settings"
+
+### Using Ollama (local models)
+1. Install and start [Ollama](https://ollama.ai)
+2. Set environment variable `OLLAMA_ORIGINS=*` before starting Ollama (see [Ollama CORS Configuration](#ollama-cors-configuration) below)
+3. Open the extension popup → **Settings** → select **Ollama (本地模型)**
+4. Click **🔄** to refresh the model list — installed local models appear automatically
+5. Select a model, set source/target languages, and start translating
 
 ## Technical Details
 
@@ -189,6 +208,46 @@ PDF pages are rendered using pdf.js (bundled, v3.11.174):
 
 On macOS, `Option+T` produces the `†` character. The extension uses `e.code === 'KeyT'` (keyboard-layout independent) instead of `e.key === 't'`.
 
+### Ollama CORS Configuration
+
+Chrome extensions run under the `chrome-extension://` origin, which is blocked by Ollama's default CORS policy. To allow the extension to connect to your local Ollama instance:
+
+**macOS (Ollama.app):**
+```bash
+# Set persistent environment variable
+launchctl setenv OLLAMA_ORIGINS "*"
+# Then quit and restart Ollama (menubar → Quit → reopen)
+```
+
+**Linux / Terminal launch:**
+```bash
+OLLAMA_ORIGINS=* ollama serve
+```
+
+**Windows (PowerShell):**
+```powershell
+$env:OLLAMA_ORIGINS="*"; ollama serve
+```
+
+**Persistent (Linux systemd):**
+```ini
+# /etc/systemd/system/ollama.service.d/override.conf
+[Service]
+Environment="OLLAMA_ORIGINS=*"
+```
+
+### Language Auto-Save
+
+When you change the source or target language in the popup dropdowns, the extension automatically saves the selection to storage. This means:
+
+- Selection translation (划词翻译) immediately uses the updated language
+- Full page translation uses the updated language
+- No need to click "Save Settings" for language changes to take effect
+
+### Extension Reload Recovery
+
+When the extension is reloaded (e.g., after updating at `chrome://extensions`), content scripts already running on pages lose their connection to the extension runtime. The extension detects this and shows a prompt asking whether to refresh the page to re-establish the connection.
+
 ## Permissions
 
 | Permission | Reason |
@@ -213,6 +272,7 @@ Auto-detect, English, 中文, 日本語, 한국어, Français, Deutsch, Español
 - DeepSeek (chat, reasoner)
 - Qwen (Plus, Max)
 - GLM (4, 4v)
+- **Ollama (local models)** — llama3.2, qwen2.5, gemma2, mistral, phi3, and any model pulled locally
 - Any OpenAI-compatible API
 
 ## License

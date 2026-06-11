@@ -75,7 +75,11 @@
           <option value="openai">OpenAI 兼容 (OpenAI / DeepSeek / 通义千问 / 智谱等)</option>
           <option value="anthropic">Anthropic Claude</option>
           <option value="gemini">Google Gemini</option>
+          <option value="ollama">Ollama (本地模型)</option>
         </select>
+        <p id="ollamaHint" class="hint" style="display:none; color:#f60; margin-top:4px">
+          ⚠️ 需要设置环境变量 <code>OLLAMA_ORIGINS=*</code> 后启动 Ollama，否则会被 CORS 阻止
+        </p>
         <label data-i18n="apiUrlLabel">API 地址</label>
         <input type="url" id="apiUrl" placeholder="https://api.openai.com/v1">
         <label data-i18n="apiKeyLabel">API Key</label>

@@ -14,7 +14,8 @@ document.querySelectorAll('[id]').forEach(el => els[el.id] = el);
 const PROVIDER_DEFAULTS = {
   openai: { url: 'https://api.openai.com/v1', model: 'gpt-4o-mini' },
   anthropic: { url: 'https://api.anthropic.com', model: 'claude-sonnet-4-20250514' },
-  gemini: { url: 'https://generativelanguage.googleapis.com/v1beta', model: 'gemini-2.5-flash' }
+  gemini: { url: 'https://generativelanguage.googleapis.com/v1beta', model: 'gemini-2.5-flash' },
+  ollama: { url: 'http://localhost:11434/v1', model: 'llama3.2' }
 };
 
 // 初始化：加载设置
@@ -23,7 +24,10 @@ document.addEventListener('DOMContentLoaded', async () => {
   if (settings) applySettings(settings);
 
   // 加载模型列表
-  updateModelList(settings?.provider || 'openai');
+  const provider = settings?.provider || 'openai';
+  updateModelList(provider);
+  updateApiKeyVisibility(provider);
+  if (provider === 'ollama') fetchOllamaModels();
 });
 
 function applySettings(s) {
@@ -68,7 +72,45 @@ els.provider.addEventListener('change', () => {
     els.model.value = def.model;
   }
   updateModelList(els.provider.value);
+  updateApiKeyVisibility(els.provider.value);
+  if (els.provider.value === 'ollama') fetchOllamaModels();
 });
+
+function updateApiKeyVisibility(provider) {
+  const keyRow = els.apiKey.closest('.password-row');
+  const keyLabel = keyRow?.previousElementSibling;
+  const isOllama = provider === 'ollama';
+  if (keyRow) keyRow.style.display = isOllama ? 'none' : '';
+  if (keyLabel) keyLabel.style.display = isOllama ? 'none' : '';
+
+  const ollamaHint = document.getElementById('ollamaHint');
+  if (ollamaHint) ollamaHint.style.display = isOllama ? 'block' : 'none';
+}
+
+async function fetchOllamaModels() {
+  const apiUrl = els.apiUrl.value || 'http://localhost:11434/v1';
+  try {
+    const result = await chrome.runtime.sendMessage({
+      action: 'getModels',
+      settings: { provider: 'ollama', apiKey: '', apiUrl }
+    });
+    if (result.success && result.models?.length) {
+      const datalist = els.modelList;
+      datalist.innerHTML = '';
+      result.models.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        datalist.appendChild(opt);
+      });
+      // 默认选第一个已安装的模型
+      if (!els.model.value || els.model.value === 'llama3.2') {
+        els.model.value = result.models[0];
+      }
+    }
+  } catch {
+    // 保留预设列表
+  }
+}
 
 async function updateModelList(provider) {
   const datalist = els.modelList;
@@ -77,7 +119,8 @@ async function updateModelList(provider) {
   const predefined = {
     openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'deepseek-chat', 'deepseek-reasoner', 'qwen-plus', 'qwen-max', 'glm-4', 'glm-4v'],
     anthropic: ['claude-sonnet-4-20250514', 'claude-3-5-haiku-latest', 'claude-3-opus-latest'],
-    gemini: ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.0-flash']
+    gemini: ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.0-flash'],
+    ollama: ['llama3.2', 'llama3.1', 'qwen2.5', 'gemma2', 'mistral', 'phi3']
   };
 
   const models = predefined[provider] || predefined.openai;
@@ -100,9 +143,19 @@ els.refreshModels.addEventListener('click', async () => {
       action: 'getModels',
       settings: { provider, apiKey, apiUrl }
     });
-    // fallback: just show predefined list
-    updateModelList(provider);
-    showStatus('模型列表已更新', 'success');
+    if (result.success && result.models?.length) {
+      const datalist = els.modelList;
+      datalist.innerHTML = '';
+      result.models.forEach(m => {
+        const opt = document.createElement('option');
+        opt.value = m;
+        datalist.appendChild(opt);
+      });
+      showStatus('模型列表已更新', 'success');
+    } else {
+      updateModelList(provider);
+      showStatus('已加载默认模型列表', 'info');
+    }
   } catch {
     updateModelList(provider);
     showStatus('已加载默认模型列表', 'info');
@@ -156,7 +209,7 @@ els.translateBtn.addEventListener('click', async () => {
 // Test connection
 els.testBtn.addEventListener('click', async () => {
   const settings = collectSettings();
-  if (!settings.apiKey) {
+  if (!settings.apiKey && settings.provider !== 'ollama') {
     showStatus('请填写 API Key', 'error');
     return;
   }
@@ -200,6 +253,14 @@ function showStatus(msg, type) {
   }
 }
 
+// 语言切换时自动保存（让划词翻译立即生效）
+els.sourceLang.addEventListener('change', () => {
+  chrome.storage.sync.set({ sourceLang: els.sourceLang.value }).catch(() => {});
+});
+els.targetLang.addEventListener('change', () => {
+  chrome.storage.sync.set({ targetLang: els.targetLang.value }).catch(() => {});
+});
+
 // Ctrl+Enter to translate in textarea
 els.inputText.addEventListener('keydown', (e) => {
   if (e.ctrlKey && e.key === 'Enter') {
@@ -211,19 +272,29 @@ els.inputText.addEventListener('keydown', (e) => {
 els.translateFullPage.addEventListener('click', async () => {
   const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
   if (!tab) return;
-  // Ensure content script is injected
+
+  const msg = {
+    action: 'translateFullPage',
+    sourceLang: els.sourceLang.value,
+    targetLang: els.targetLang.value
+  };
+
+  // 保存当前语言设置，让划词翻译等也能使用更新后的语言
+  await chrome.storage.sync.set({
+    sourceLang: els.sourceLang.value,
+    targetLang: els.targetLang.value
+  });
+
   try {
-    await chrome.tabs.sendMessage(tab.id, { action: 'translateFullPage' });
+    await chrome.tabs.sendMessage(tab.id, msg);
   } catch {
-    // Inject content script if not present
     await chrome.scripting.executeScript({
       target: { tabId: tab.id },
       files: ['content/content.js']
     });
-    // Try again
     setTimeout(async () => {
       try {
-        await chrome.tabs.sendMessage(tab.id, { action: 'translateFullPage' });
+        await chrome.tabs.sendMessage(tab.id, msg);
       } catch (e) {
         showStatus('无法注入翻译脚本', 'error');
       }
@@ -244,15 +315,24 @@ els.translateFile.addEventListener('click', async () => {
     // 通过 background 打开文件查看器
     await chrome.runtime.sendMessage({ action: 'openFileViewer', url: tab.url, tabId: tab.id });
   } else if (url.includes('office.com') || url.includes('docs.google.com') || url.includes('sharepoint.com')) {
+    const msg = {
+      action: 'translateFullPage',
+      sourceLang: els.sourceLang.value,
+      targetLang: els.targetLang.value
+    };
+    await chrome.storage.sync.set({
+      sourceLang: els.sourceLang.value,
+      targetLang: els.targetLang.value
+    });
     try {
-      await chrome.tabs.sendMessage(tab.id, { action: 'translateFullPage' });
+      await chrome.tabs.sendMessage(tab.id, msg);
     } catch {
       await chrome.scripting.executeScript({
         target: { tabId: tab.id },
         files: ['content/content.js']
       });
       setTimeout(async () => {
-        await chrome.tabs.sendMessage(tab.id, { action: 'translateFullPage' }).catch(() => {});
+        await chrome.tabs.sendMessage(tab.id, msg).catch(() => {});
       }, 300);
     }
   } else {

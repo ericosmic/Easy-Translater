@@ -91,12 +91,18 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
       return true;
 
     case 'getModels': {
-      const models = {
-        openai: ['gpt-4o', 'gpt-4o-mini', 'gpt-4-turbo', 'deepseek-chat', 'deepseek-reasoner', 'qwen-plus', 'qwen-max', 'glm-4', 'glm-4v'],
-        anthropic: ['claude-sonnet-4-20250514', 'claude-3-5-haiku-latest', 'claude-3-opus-latest'],
-        gemini: ['gemini-2.5-flash', 'gemini-2.5-pro', 'gemini-2.0-flash']
-      };
-      sendResponse({ success: true, models: models[request.settings?.provider] || models.openai });
+      (async () => {
+        try {
+          const models = await getAvailableModels(
+            request.settings?.provider || 'openai',
+            request.settings?.apiKey || '',
+            request.settings?.apiUrl || 'https://api.openai.com/v1'
+          );
+          sendResponse({ success: true, models });
+        } catch (err) {
+          sendResponse({ success: false, error: err.message });
+        }
+      })();
       return true;
     }
 

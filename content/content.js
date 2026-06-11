@@ -32,8 +32,26 @@
         currentDisplayMode = res.settings.displayMode || 'tooltip';
         return res.settings;
       }
-    } catch {}
+    } catch (e) {
+      if (isExtensionInvalidated(e)) handleExtensionReload();
+    }
     return {};
+  }
+
+  function isExtensionInvalidated(e) {
+    return e.message?.includes('Extension context invalidated') ||
+           e.message?.includes('Extension context') ||
+           e.toString().includes('Extension context invalidated');
+  }
+
+  function handleExtensionReload() {
+    console.warn('Extension reloaded detected, reloading page to re-inject content script');
+    try {
+      // Try to reconnect by triggering a page reload
+      if (confirm('翻译插件已更新，需要刷新页面才能继续使用。是否刷新？')) {
+        window.location.reload();
+      }
+    } catch {}
   }
 
   function escapeHtml(str) {
@@ -55,7 +73,7 @@
       sendResponse({ success: true });
     }
     if (request.action === 'translateFullPage') {
-      translateFullPage();
+      translateFullPage(request.sourceLang, request.targetLang);
       sendResponse({ success: true });
     }
     if (request.action === 'revertTranslation') {
@@ -204,6 +222,7 @@
       const result = await chrome.runtime.sendMessage({ action: 'translate', text, settings });
       contentEl.textContent = result.success ? result.text : `翻译失败: ${result.error}`;
     } catch (err) {
+      if (isExtensionInvalidated(err)) { handleExtensionReload(); return; }
       contentEl.textContent = `翻译失败: ${err.message}`;
     }
   }
@@ -248,6 +267,10 @@
       chrome.runtime.sendMessage({ action: 'translate', text, settings }).then(result => {
         const el = sidebar?.querySelector('.sidebar-translated');
         if (el) el.textContent = result.success ? result.text : `翻译失败: ${result.error}`;
+      }).catch(err => {
+        if (isExtensionInvalidated(err)) { handleExtensionReload(); return; }
+        const el = sidebar?.querySelector('.sidebar-translated');
+        if (el) el.textContent = `翻译失败: ${err.message}`;
       });
     });
   }
@@ -261,9 +284,9 @@
   const MAX_TEXT_LENGTH = 1500;
   const MIN_TEXT_LENGTH = 1;
 
-  async function translateFullPage() {
-    // 内存缓存命中（同一页面会话内）
-    if (fullPageState) {
+  async function translateFullPage(sourceLangOverride, targetLangOverride) {
+    // 内存缓存命中（同一页面会话内）—— 语言不同则忽略缓存
+    if (fullPageState && !sourceLangOverride && !targetLangOverride) {
       if (!fullPageState.banner) {
         const banner = createBanner();
         document.body.prepend(banner);
@@ -279,7 +302,11 @@
     }
 
     const settings = await loadSettings();
-    if (!settings.apiKey) {
+    // 应用 popup 传入的语言覆盖
+    if (sourceLangOverride) settings.sourceLang = sourceLangOverride;
+    if (targetLangOverride) settings.targetLang = targetLangOverride;
+
+    if (!settings.apiKey && settings.provider !== 'ollama') {
       alert('请先配置 API Key！（点击扩展图标 → 设置）');
       return;
     }
