@@ -3,7 +3,7 @@
 > **最近更新**: 2026-06-20 — 见下方 [更新日志](#更新日志)
 
 A Chrome extension that translates web pages, PDF files, and Office documents using custom LLM backends (OpenAI, Anthropic Claude, Google Gemini, DeepSeek, Qwen, GLM, **Ollama local models**, etc.).
-## 更新日志
+## Update Log
 
 ### 2026-06-20
 
