@@ -1,5 +1,5 @@
 // 设置弹窗逻辑
-const CONFIG_KEYS = ['provider', 'apiUrl', 'apiKey', 'model', 'sourceLang', 'targetLang', 'style', 'displayMode'];
+const CONFIG_KEYS = ['provider', 'apiUrl', 'apiKey', 'model', 'sourceLang', 'targetLang', 'style', 'displayMode', 'customPrompts', 'activePrompt'];
 
 function getDefaultTargetLang() {
   const code = (navigator.language || 'en').split('-')[0].toLowerCase();
@@ -28,6 +28,12 @@ document.addEventListener('DOMContentLoaded', async () => {
   updateModelList(provider);
   updateApiKeyVisibility(provider);
   if (provider === 'ollama') fetchOllamaModels();
+
+  // 加载自定义 prompts
+  if (window.PromptManager) {
+    window.PromptManager.load(settings?.customPrompts, settings?.activePrompt);
+    window.PromptManager.init(showStatus);
+  }
 });
 
 function applySettings(s) {
@@ -42,6 +48,7 @@ function applySettings(s) {
 }
 
 function collectSettings() {
+  const promptSel = document.getElementById('promptSelector');
   return {
     provider: els.provider.value,
     apiUrl: els.apiUrl.value,
@@ -50,7 +57,9 @@ function collectSettings() {
     sourceLang: els.sourceLang.value,
     targetLang: els.targetLang.value,
     style: els.style.value,
-    displayMode: els.displayMode.value
+    displayMode: els.displayMode.value,
+    customPrompts: window.PromptManager ? window.PromptManager.getPrompts() : {},
+    activePrompt: promptSel ? promptSel.value : 'default'
   };
 }
 

@@ -1,5 +1,5 @@
 {
-  "extName": { "message": "만능 번역기" },
+  "extName": { "message": "Easy Translator" },
   "extDesc": { "message": "웹페이지, PDF, PPT, DOCX 파일을 커스텀 LLM으로 번역" },
   "tabTranslate": { "message": "번역" },
   "tabSettings": { "message": "설정" },

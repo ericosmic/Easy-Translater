@@ -41,7 +41,7 @@
       displayModeInline: '替换原文', displayModeSidebar: '侧边栏',
       testBtn: '测试连接', saveBtn: '保存设置', showHide: '显示/隐藏',
       refreshModels: '刷新可用模型',
-      aboutTitle: '万能翻译器 v1.0.0',
+      aboutTitle: 'Easy Translator v1.0.0',
       aboutDesc: '支持翻译网页、PDF、PPT、DOCX等文件内容。',
       aboutModels: '可接入多种大模型：',
       aboutUsage: '使用方式：', aboutUsage1: '选中文本 → 右键 → 翻译选中文本',

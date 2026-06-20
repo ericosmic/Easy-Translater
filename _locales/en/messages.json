@@ -1,5 +1,5 @@
 {
-  "extName": { "message": "Universal Translator" },
+  "extName": { "message": "Easy Translator" },
   "extDesc": { "message": "Translate web pages, PDF, PPT, DOCX files with custom LLM backends" },
   "tabTranslate": { "message": "Translate" },
   "tabSettings": { "message": "Settings" },

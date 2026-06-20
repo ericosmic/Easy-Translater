@@ -8,6 +8,9 @@ const MAX_CACHE_ENTRIES = 80;
 // PDF 数据暂存（供 viewer 页面读取）
 const pdfStore = new Map(); // id → { data: ArrayBuffer, contentType: string }
 
+// 翻译终止控制器集合（所有进行中的翻译请求）
+const activeAbortControllers = new Set();
+
 function cacheKey(url, targetLang) {
   return `${url}::${targetLang || getDefaultTargetLang()}`;
 }
@@ -27,17 +30,19 @@ function evictOldest() {
 
 // 安装事件
 chrome.runtime.onInstalled.addListener(() => {
-  // 创建右键菜单（使用 i18n）
-  chrome.contextMenus.create({
-    id: 'translate-selection',
-    title: chrome.i18n.getMessage('contextMenuSelection'),
-    contexts: ['selection']
-  });
+  // 清除旧的右键菜单，避免 duplicate id 错误
+  chrome.contextMenus.removeAll(() => {
+    chrome.contextMenus.create({
+      id: 'translate-selection',
+      title: chrome.i18n.getMessage('contextMenuSelection'),
+      contexts: ['selection']
+    });
 
-  chrome.contextMenus.create({
-    id: 'translate-page',
-    title: chrome.i18n.getMessage('contextMenuPage'),
-    contexts: ['page']
+    chrome.contextMenus.create({
+      id: 'translate-page',
+      title: chrome.i18n.getMessage('contextMenuPage'),
+      contexts: ['page']
+    });
   });
 
   // 初始化默认设置（根据浏览器语言自动选择目标语言）
@@ -72,10 +77,28 @@ chrome.contextMenus.onClicked.addListener((info, tab) => {
 // 处理来自 content script 的消息
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   switch (request.action) {
-    case 'translate':
-      handleTranslation(request.text, request.settings, request.batchMode)
-        .then(result => sendResponse({ success: true, text: result }))
-        .catch(err => sendResponse({ success: false, error: err.message }));
+    case 'translate': {
+      const controller = new AbortController();
+      activeAbortControllers.add(controller);
+      handleTranslation(request.text, request.settings, request.batchMode, controller.signal)
+        .then(result => {
+          activeAbortControllers.delete(controller);
+          sendResponse({ success: true, text: result });
+        })
+        .catch(err => {
+          activeAbortControllers.delete(controller);
+          if (err.name === 'AbortError') {
+            sendResponse({ success: true, text: '', aborted: true });
+          } else {
+            sendResponse({ success: false, error: err.message });
+          }
+        });
+      return true;
+    }
+    case 'abortTranslation':
+      for (const c of activeAbortControllers) c.abort();
+      activeAbortControllers.clear();
+      sendResponse({ success: true });
       return true;
 
     case 'testConnection':
@@ -148,10 +171,10 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   }
 });
 
-async function handleTranslation(text, customSettings, batchMode = false) {
+async function handleTranslation(text, customSettings, batchMode = false, signal = null) {
   const defaults = await new Promise(resolve => chrome.storage.sync.get(null, resolve));
   const settings = { ...defaults, ...customSettings };
-  return await translateText(text, settings, batchMode);
+  return await translateText(text, settings, batchMode, signal);
 }
 
 async function handlePDFTranslation(tabId, fileUrl) {

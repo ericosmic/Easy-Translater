@@ -248,7 +248,7 @@
       sidebar.className = 'translate-sidebar';
       sidebar.innerHTML = `
         <div class="translate-sidebar-header">
-          <h3>万能翻译器</h3>
+          <h3>Easy Translator</h3>
           <button class="sidebar-close">✕</button>
         </div>
         <div class="translate-sidebar-content">
@@ -462,6 +462,8 @@
     newBtn.addEventListener('click', () => {
       flag.aborted = true;
       updateBanner(banner, 'error', '翻译已停止');
+      // 通知后台终止所有进行中的 HTTP 请求
+      chrome.runtime.sendMessage({ action: 'abortTranslation' }).catch(() => {});
     });
   }
 
@@ -642,7 +644,7 @@
     banner.innerHTML = `
       <div class="ft-banner-inner">
         <span class="ft-logo">🌐</span>
-        <span class="ft-text">万能翻译器</span>
+        <span class="ft-text">Easy Translator</span>
         <span class="ft-status">准备中...</span>
         <div class="ft-progress-bar"><div class="ft-progress-fill"></div></div>
         <button class="ft-toggle-btn toggle-btn" style="display:none">↩ 原文</button>

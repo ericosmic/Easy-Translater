@@ -1,5 +1,5 @@
 {
-  "extName": { "message": "万能翻译器" },
+  "extName": { "message": "Easy Translator" },
   "extDesc": { "message": "翻译网页、PDF、PPT、DOCX文件，支持自定义接入大模型" },
   "tabTranslate": { "message": "翻译" },
   "tabSettings": { "message": "设置" },
@@ -28,7 +28,7 @@
   "displayModeSidebar": { "message": "侧边栏" },
   "testBtn": { "message": "测试连接" },
   "saveBtn": { "message": "保存设置" },
-  "aboutTitle": { "message": "万能翻译器 v1.0.0" },
+  "aboutTitle": { "message": "Easy Translator v1.0.0" },
   "aboutDesc": { "message": "支持翻译网页、PDF、PPT、DOCX等文件内容。" },
   "aboutModels": { "message": "可接入多种大模型：" },
   "aboutUsage": { "message": "使用方式：" },

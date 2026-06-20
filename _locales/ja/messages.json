@@ -1,5 +1,5 @@
 {
-  "extName": { "message": "万能翻訳機" },
+  "extName": { "message": "Easy Translator" },
   "extDesc": { "message": "ウェブページ、PDF、PPT、DOCXファイルをカスタムLLMで翻訳" },
   "tabTranslate": { "message": "翻訳" },
   "tabSettings": { "message": "設定" },

@@ -1,6 +1,27 @@
 # Easy Translator
 
+> **最近更新**: 2026-06-20 — 见下方 [更新日志](#更新日志)
+
 A Chrome extension that translates web pages, PDF files, and Office documents using custom LLM backends (OpenAI, Anthropic Claude, Google Gemini, DeepSeek, Qwen, GLM, **Ollama local models**, etc.).
+## 更新日志
+
+### 2026-06-20
+
+- **品牌统一** — 所有语言（中/英/日/韩）的扩展名称统一为 **Easy Translator**，不再使用「万能翻译器」「Universal Translator」等不同名称
+- **自定义 Prompt 系统** — 设置页新增 Prompt 管理器：
+  - 支持保存多个翻译 Prompt 模板，随时切换
+  - 变量 `{src}` / `{tgt}` 自动替换为源语言/目标语言
+  - 批量翻译时自动追加段落标记说明，与自定义 Prompt 兼容
+  - 支持保存新模板、更新当前模板、删除模板
+- **翻译终止机制** — 新增 `AbortController` 支持：
+  - 点击"停止"按钮时不仅在前端终止，还通过 `abortTranslation` 消息中断后台所有进行中的 HTTP 请求
+  - 所有 LLM 后端（OpenAI / Anthropic / Gemini / Ollama）均支持 signal 传递
+  - 中断后返回 `aborted: true`，避免误报错误
+- **右键菜单稳定性修复** — 安装时先调用 `chrome.contextMenus.removeAll()` 清除旧菜单，再创建新菜单项，避免 `duplicate id` 错误
+
+### 2026-06-11
+- **Ollama local model support** — supports local Ollama models, including custom models trained with `ollama train`
+  
 
 ## Features
 
@@ -274,6 +295,7 @@ Auto-detect, English, 中文, 日本語, 한국어, Français, Deutsch, Español
 - GLM (4, 4v)
 - **Ollama (local models)** — llama3.2, qwen2.5, gemma2, mistral, phi3, and any model pulled locally
 - Any OpenAI-compatible API
+
 
 ## License
 
