@@ -1,27 +1,28 @@
 # Easy Translator
 
-> **最近更新**: 2026-06-20 — 见下方 [更新日志](#更新日志)
+> [**中文版 README**](README_CN.md)
 
 A Chrome extension that translates web pages, PDF files, and Office documents using custom LLM backends (OpenAI, Anthropic Claude, Google Gemini, DeepSeek, Qwen, GLM, **Ollama local models**, etc.).
-## Update Log
+
+## What's New
 
 ### 2026-06-20
 
-- **品牌统一** — 所有语言（中/英/日/韩）的扩展名称统一为 **Easy Translator**，不再使用「万能翻译器」「Universal Translator」等不同名称
-- **自定义 Prompt 系统** — 设置页新增 Prompt 管理器：
-  - 支持保存多个翻译 Prompt 模板，随时切换
-  - 变量 `{src}` / `{tgt}` 自动替换为源语言/目标语言
-  - 批量翻译时自动追加段落标记说明，与自定义 Prompt 兼容
-  - 支持保存新模板、更新当前模板、删除模板
-- **翻译终止机制** — 新增 `AbortController` 支持：
-  - 点击"停止"按钮时不仅在前端终止，还通过 `abortTranslation` 消息中断后台所有进行中的 HTTP 请求
-  - 所有 LLM 后端（OpenAI / Anthropic / Gemini / Ollama）均支持 signal 传递
-  - 中断后返回 `aborted: true`，避免误报错误
-- **右键菜单稳定性修复** — 安装时先调用 `chrome.contextMenus.removeAll()` 清除旧菜单，再创建新菜单项，避免 `duplicate id` 错误
+- **Unified branding** — extension name unified to **Easy Translator** across all locales (en/zh_CN/ja/ko), replacing inconsistent names like "Universal Translator" and "万能翻译器"
+- **Custom Prompt system** — new Prompt Manager in Settings:
+  - Save multiple translation prompt templates, switch freely
+  - `{src}` / `{tgt}` variables auto-replaced with source/target language
+  - Batch translation automatically appends `[#N]` segment marker instructions, compatible with custom prompts
+  - Create new templates, update existing ones, or delete unused ones
+- **Translation abort mechanism** — `AbortController` integration:
+  - Stop button now sends `abortTranslation` message to cancel all in-flight HTTP requests in the background
+  - All LLM backends (OpenAI / Anthropic / Gemini / Ollama) pass the abort signal
+  - Returns `aborted: true` on cancellation to avoid false error reporting
+- **Context menu stability fix** — call `chrome.contextMenus.removeAll()` before creating menu items on install, eliminating `duplicate id` errors
 
 ### 2026-06-11
+
 - **Ollama local model support** — supports local Ollama models, including custom models trained with `ollama train`
-  
 
 ## Features
 
@@ -61,6 +62,7 @@ A Chrome extension that translates web pages, PDF files, and Office documents us
 ### UX
 - **Language auto-save** — switching source/target language in the popup immediately saves to storage, so selection translation respects the update without needing to click "Save Settings"
 - **API Key auto-hide** — selecting Ollama as provider hides the API Key field
+- **Custom Prompt templates** — save and switch between multiple translation prompt templates in Settings
 
 ## Architecture
 
@@ -167,9 +169,16 @@ A Chrome extension that translates web pages, PDF files, and Office documents us
 ### Using Ollama (local models)
 1. Install and start [Ollama](https://ollama.ai)
 2. Set environment variable `OLLAMA_ORIGINS=*` before starting Ollama (see [Ollama CORS Configuration](#ollama-cors-configuration) below)
-3. Open the extension popup → **Settings** → select **Ollama (本地模型)**
+3. Open the extension popup → **Settings** → select **Ollama (local model)**
 4. Click **🔄** to refresh the model list — installed local models appear automatically
 5. Select a model, set source/target languages, and start translating
+
+### Using Custom Prompt Templates
+1. Go to **Settings** → **Custom Prompt** section
+2. Select an existing template from the dropdown or write a new one
+3. Use `{src}` and `{tgt}` variables for source/target language placeholders
+4. Click **💾 Save** to create a new template, or **✏️ Update** to modify the current one
+5. In batch translation mode, numbered `[#N]` markers are automatically appended
 
 ## Technical Details
 
@@ -261,7 +270,7 @@ Environment="OLLAMA_ORIGINS=*"
 
 When you change the source or target language in the popup dropdowns, the extension automatically saves the selection to storage. This means:
 
-- Selection translation (划词翻译) immediately uses the updated language
+- Selection translation immediately uses the updated language
 - Full page translation uses the updated language
 - No need to click "Save Settings" for language changes to take effect
 
@@ -295,7 +304,6 @@ Auto-detect, English, 中文, 日本語, 한국어, Français, Deutsch, Español
 - GLM (4, 4v)
 - **Ollama (local models)** — llama3.2, qwen2.5, gemma2, mistral, phi3, and any model pulled locally
 - Any OpenAI-compatible API
-
 
 ## License
 
