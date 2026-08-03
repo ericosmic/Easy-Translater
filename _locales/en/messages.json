@@ -1,9 +1,11 @@
 {
   "extName": { "message": "Easy Translator" },
   "extDesc": { "message": "Translate web pages, PDF, PPT, DOCX files with custom LLM backends" },
+
   "tabTranslate": { "message": "Translate" },
   "tabSettings": { "message": "Settings" },
   "tabAbout": { "message": "About" },
+
   "translatePage": { "message": "Translate Entire Page" },
   "translatePageDesc": { "message": "Replace all page text with translations" },
   "translateFile": { "message": "Translate Current File" },
@@ -13,41 +15,235 @@
   "autoDetect": { "message": "Auto Detect" },
   "translateBtn": { "message": "Translate" },
   "swapLang": { "message": "Swap languages" },
+
+  "modelConfigTitle": { "message": "Model Configuration" },
   "providerLabel": { "message": "API Provider" },
+  "providerOpenAI": { "message": "OpenAI-compatible (OpenAI / DeepSeek / Qwen / Zhipu, etc.)" },
+  "providerOllama": { "message": "Ollama (local models)" },
+  "ollamaHintPre": { "message": "Start Ollama with the environment variable" },
+  "ollamaHintPost": { "message": "set, otherwise requests are blocked by CORS" },
   "apiUrlLabel": { "message": "API URL" },
   "apiKeyLabel": { "message": "API Key" },
+  "showHide": { "message": "Show/Hide" },
   "modelLabel": { "message": "Model Name" },
+  "refreshModels": { "message": "Refresh Models" },
   "styleLabel": { "message": "Translation Style" },
   "styleNatural": { "message": "Natural & Fluent" },
   "styleFormal": { "message": "Formal & Professional" },
+
+  "customPromptLabel": { "message": "Custom Prompt" },
+  "promptDefaultOption": { "message": "Default (generated from translation style)" },
+  "promptPlaceholder": { "message": "You are a professional translator..." },
+  "promptDefaultPlaceholder": { "message": "Uses the default prompt (generated from \"Translation Style\")" },
+  "promptSaveNew": { "message": "Save as new template" },
+  "promptUpdate": { "message": "Update current template" },
+  "promptDelete": { "message": "Delete" },
+  "promptVarsLabel": { "message": "Variables:" },
+  "promptVarSrc": { "message": "source language" },
+  "promptVarTgt": { "message": "target language" },
+  "promptBatchNote": { "message": "The [#N] marker instruction is appended automatically for batch translation" },
+  "promptNamePrompt": { "message": "Template name:" },
+  "promptDefaultName": {
+    "message": "Custom $N$",
+    "placeholders": { "n": { "content": "$1" } }
+  },
+  "promptConfirmDelete": { "message": "Delete this template?" },
+  "statusPromptEmpty": { "message": "Enter prompt content first" },
+  "statusPromptSaved": { "message": "✓ New template saved" },
+  "statusPromptUpdated": { "message": "✓ Template updated" },
+  "statusPromptDeleted": { "message": "✓ Template deleted" },
+
   "pageTranslateLabel": { "message": "Page Translation" },
-  "shortcutHint": { "message": "Select text and press Alt+T for quick translation" },
+  "shortcutLabel": { "message": "Shortcut" },
+  "shortcutHint": { "message": "Select text and press" },
+  "shortcutHint2": { "message": "for quick translation" },
   "displayModeLabel": { "message": "Display Mode" },
   "displayModeTooltip": { "message": "Floating Tooltip" },
   "displayModeInline": { "message": "Replace Inline" },
   "displayModeSidebar": { "message": "Sidebar" },
   "testBtn": { "message": "Test Connection" },
   "saveBtn": { "message": "Save Settings" },
-  "aboutTitle": { "message": "Universal Translator v1.0.0" },
+
+  "aboutTitle": { "message": "Easy Translator v1.0.0" },
   "aboutDesc": { "message": "Translate web pages, PDF, PPT, DOCX and more." },
   "aboutModels": { "message": "Supports multiple LLM backends:" },
+  "aboutModelOpenAI": { "message": "OpenAI GPT family" },
+  "aboutModelAnthropic": { "message": "Anthropic Claude family" },
+  "aboutModelGemini": { "message": "Google Gemini family" },
+  "aboutModelOthers": { "message": "DeepSeek, Qwen, Zhipu and others" },
   "aboutUsage": { "message": "How to use:" },
   "aboutUsage1": { "message": "Select text → Right-click → Translate" },
   "aboutUsage2": { "message": "Select text → Press Alt+T" },
   "aboutUsage3": { "message": "Click extension icon to translate input text" },
   "aboutPDF": { "message": "PDF: Opens automatically in the translation viewer" },
-  "modelConfigTitle": { "message": "Model Configuration" },
-  "showHide": { "message": "Show/Hide" },
-  "refreshModels": { "message": "Refresh Models" },
-  "shortcutLabel": { "message": "Shortcut" },
+
+  "statusFetchingModels": { "message": "Fetching model list..." },
+  "statusModelsUpdated": { "message": "Model list updated" },
+  "statusModelsDefault": { "message": "Loaded the default model list" },
+  "statusNeedApiKey": { "message": "Please enter an API Key" },
+  "statusTesting": { "message": "Testing connection..." },
+  "statusTestOk": {
+    "message": "✓ Connected! Test translation: $RESULT$",
+    "placeholders": { "result": { "content": "$1" } }
+  },
+  "statusTestFail": {
+    "message": "✗ Connection failed: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  },
+  "statusSettingsSaved": { "message": "✓ Settings saved" },
+  "statusInjectFailed": { "message": "Could not inject the translation script" },
+  "statusNotAFile": { "message": "The current page is not a PDF or Office file" },
+  "btnTranslating": { "message": "Translating..." },
+  "btnTesting": { "message": "Testing..." },
+
   "contextMenuSelection": { "message": "Translate Selected Text" },
   "contextMenuPage": { "message": "Translate Entire Page" },
+
+  "confirmReload": { "message": "The translator extension has been updated. Reload the page to continue?" },
+  "floatBtnTranslate": { "message": "Translate" },
+  "tooltipTitle": { "message": "Translation" },
+  "loading": { "message": "Translating..." },
+  "actionCopy": { "message": "Copy" },
+  "actionSwitch": { "message": "Switch language" },
+  "translateFailed": {
+    "message": "Translation failed: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  },
+  "sidebarOriginal": { "message": "Original" },
+  "sidebarTranslation": { "message": "Translation" },
+  "alertNeedApiKey": { "message": "Please configure an API Key first (click the extension icon → Settings)" },
+
+  "bannerPreparing": { "message": "Preparing..." },
+  "bannerScanning": { "message": "Scanning page text..." },
+  "bannerNoText": { "message": "No translatable text found" },
+  "bannerCacheLoaded": { "message": "Cached translation loaded" },
+  "bannerCacheLoadedCount": {
+    "message": "Cached translation loaded ($COUNT$ segments)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "bannerProgressStart": {
+    "message": "Translating... 0/$TOTAL$ (cached $CACHED$, pending $TOTAL2$)",
+    "placeholders": {
+      "total": { "content": "$1" },
+      "cached": { "content": "$2" },
+      "total2": { "content": "$3" }
+    }
+  },
+  "bannerProgress": {
+    "message": "Translating... $DONE$/$TOTAL$ ($CHUNK$/$CHUNKS$ blocks)",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" },
+      "chunk": { "content": "$3" },
+      "chunks": { "content": "$4" }
+    }
+  },
+  "bannerDone": {
+    "message": "Translation complete! $DONE$/$TOTAL$ segments",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "bannerStopped": { "message": "Translation stopped" },
+  "bannerReverted": { "message": "Original text restored" },
+  "bannerShowingTranslation": { "message": "Showing translation" },
+  "titleClose": { "message": "Close" },
+  "btnStop": { "message": "Stop" },
+  "titleStop": { "message": "Stop translation" },
+  "btnShowTranslation": { "message": "Show translation" },
+  "btnShowOriginal": { "message": "Original" },
+
+  "pdfBtnTranslate": { "message": "Translate PDF" },
+  "pdfBtnTranslateThis": { "message": "Translate this PDF" },
+  "pdfNoText": { "message": "Could not extract text from this PDF. It may be a scan or an encrypted document." },
+  "pdfFailedMark": { "message": "[translation failed]" },
+  "pdfPanelTitle": { "message": "PDF Translation" },
+  "pdfPreparing": { "message": "Preparing translation..." },
+  "pdfProgress": {
+    "message": "Progress: $DONE$/$TOTAL$",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "pdfDone": { "message": "✅ Translation complete" },
+
   "viewerTitle": { "message": "PDF Translator" },
   "viewerTranslate": { "message": "Translate" },
-  "viewerToggleOrig": { "message": "Show Original" },
-  "viewerToggleTrans": { "message": "Show Translation" },
-  "viewerSourceLang": { "message": "Source" },
-  "viewerTargetLang": { "message": "Target" },
-  "viewerPageOf": { "message": "of" },
-  "viewerPages": { "message": "pages" }
+  "viewerToggleOrig": { "message": "Original" },
+  "viewerToggleTrans": { "message": "Translation" },
+  "viewerMissingParam": { "message": "Missing file parameter" },
+  "viewerNoPdfData": { "message": "Could not load PDF data" },
+  "viewerParseFailed": {
+    "message": "Failed to parse PDF: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  },
+  "viewerRendering": {
+    "message": "Rendering... $PAGE$/$TOTAL$",
+    "placeholders": {
+      "page": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "viewerTranslatingProgress": {
+    "message": "Translating... $DONE$/$TOTAL$",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "viewerTransFailed": { "message": "(translation failed)" },
+  "viewerLoadingFile": { "message": "Loading file..." },
+  "viewerNoFileData": { "message": "Could not load file data" },
+  "viewerEmptyFile": { "message": "The file is empty" },
+  "viewerSegments": {
+    "message": "$COUNT$ segments",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "viewerPagesCount": {
+    "message": "$COUNT$ pages",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+
+  "promptSrcAuto": { "message": "source text" },
+  "promptBatch": {
+    "message": "You are a professional translator. Translate the following $SRC$ into $TGT$. Every paragraph in the text starts with a \"[#number]\" marker. Translate each paragraph one by one and keep the \"[#number]\" markers and the paragraph order exactly as they are. Do not merge or skip any paragraph. Return only the translation, without any extra content.",
+    "placeholders": {
+      "src": { "content": "$1" },
+      "tgt": { "content": "$2" }
+    }
+  },
+  "promptFormal": {
+    "message": "You are a professional translator. Translate the following $SRC$ into $TGT$. Use a formal, professional tone. Return only the translation, without any extra content.",
+    "placeholders": {
+      "src": { "content": "$1" },
+      "tgt": { "content": "$2" }
+    }
+  },
+  "promptNatural": {
+    "message": "You are a professional translator. Translate the following $SRC$ into $TGT$. Use natural, fluent everyday language. Return only the translation, without any extra content.",
+    "placeholders": {
+      "src": { "content": "$1" },
+      "tgt": { "content": "$2" }
+    }
+  },
+  "promptBatchSuffix": { "message": "Every paragraph in the text starts with a \"[#number]\" marker. Translate each paragraph one by one and keep the \"[#number]\" markers and the paragraph order exactly as they are. Do not merge or skip any paragraph." },
+
+  "errNoApiKey": { "message": "Please configure an API Key first" },
+  "errNoText": { "message": "No text to translate" },
+  "errApi": {
+    "message": "API error ($STATUS$): $BODY$",
+    "placeholders": {
+      "status": { "content": "$1" },
+      "body": { "content": "$2" }
+    }
+  },
+  "errOllamaConnect": { "message": "Cannot reach Ollama — make sure it is running (ollama serve)" },
+  "errOllamaCors": { "message": "Ollama rejected the extension request (CORS). Start Ollama with the environment variable OLLAMA_ORIGINS=* set" },
+  "errPdfNoText": { "message": "Could not extract text from the PDF, or the PDF is a scan" },
+  "errPdfFailed": {
+    "message": "PDF processing failed: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  }
 }

@@ -72,13 +72,13 @@
         <h3 data-i18n="modelConfigTitle">模型配置</h3>
         <label data-i18n="providerLabel">API 提供商</label>
         <select id="provider">
-          <option value="openai">OpenAI 兼容 (OpenAI / DeepSeek / 通义千问 / 智谱等)</option>
+          <option value="openai" data-i18n="providerOpenAI">OpenAI 兼容 (OpenAI / DeepSeek / 通义千问 / 智谱等)</option>
           <option value="anthropic">Anthropic Claude</option>
           <option value="gemini">Google Gemini</option>
-          <option value="ollama">Ollama (本地模型)</option>
+          <option value="ollama" data-i18n="providerOllama">Ollama (本地模型)</option>
         </select>
         <p id="ollamaHint" class="hint" style="display:none; color:#f60; margin-top:4px">
-          ⚠️ 需要设置环境变量 <code>OLLAMA_ORIGINS=*</code> 后启动 Ollama，否则会被 CORS 阻止
+          ⚠️ <span data-i18n="ollamaHintPre">需要设置环境变量</span> <code>OLLAMA_ORIGINS=*</code> <span data-i18n="ollamaHintPost">后启动 Ollama，否则会被 CORS 阻止</span>
         </p>
         <label data-i18n="apiUrlLabel">API 地址</label>
         <input type="url" id="apiUrl" placeholder="https://api.openai.com/v1">
@@ -99,20 +99,20 @@
           <option value="formal" data-i18n="styleFormal">正式专业</option>
         </select>
 
-        <label style="margin-top:16px">自定义 Prompt</label>
+        <label style="margin-top:16px" data-i18n="customPromptLabel">自定义 Prompt</label>
         <div class="prompt-manager">
           <select id="promptSelector" style="width:100%;margin-bottom:8px">
-            <option value="default">默认 (根据翻译风格自动生成)</option>
+            <option value="default" data-i18n="promptDefaultOption">默认 (根据翻译风格自动生成)</option>
           </select>
-          <textarea id="promptText" placeholder="你是一个专业翻译..." rows="4" style="width:100%;margin-bottom:8px;font-size:12px;font-family:monospace"></textarea>
+          <textarea id="promptText" data-i18n-placeholder="promptPlaceholder" placeholder="你是一个专业翻译..." rows="4" style="width:100%;margin-bottom:8px;font-size:12px;font-family:monospace"></textarea>
           <div style="display:flex;gap:8px;margin-bottom:8px">
-            <button id="savePrompt" class="btn-secondary" style="flex:1">💾 保存为新模板</button>
-            <button id="updatePrompt" class="btn-secondary" style="flex:1">✏️ 更新当前模板</button>
-            <button id="deletePrompt" class="btn-secondary" style="flex:1">🗑️ 删除</button>
+            <button id="savePrompt" class="btn-secondary" style="flex:1">💾 <span data-i18n="promptSaveNew">保存为新模板</span></button>
+            <button id="updatePrompt" class="btn-secondary" style="flex:1">✏️ <span data-i18n="promptUpdate">更新当前模板</span></button>
+            <button id="deletePrompt" class="btn-secondary" style="flex:1">🗑️ <span data-i18n="promptDelete">删除</span></button>
           </div>
           <p class="hint" style="font-size:11px;color:#888">
-            变量: <code>{src}</code> 源语言, <code>{tgt}</code> 目标语言<br>
-            系统会自动在批量翻译时加入 [#数字] 标记说明
+            <span data-i18n="promptVarsLabel">变量:</span> <code>{src}</code> <span data-i18n="promptVarSrc">源语言</span>, <code>{tgt}</code> <span data-i18n="promptVarTgt">目标语言</span><br>
+            <span data-i18n="promptBatchNote">系统会自动在批量翻译时加入 [#数字] 标记说明</span>
           </p>
         </div>
       </div>
@@ -143,10 +143,10 @@
         <p data-i18n="aboutDesc">支持翻译网页、PDF、PPT、DOCX等文件内容。</p>
         <p data-i18n="aboutModels">可接入多种大模型：</p>
         <ul>
-          <li>OpenAI GPT 系列</li>
-          <li>Anthropic Claude 系列</li>
-          <li>Google Gemini 系列</li>
-          <li>DeepSeek、通义千问、智谱等</li>
+          <li data-i18n="aboutModelOpenAI">OpenAI GPT 系列</li>
+          <li data-i18n="aboutModelAnthropic">Anthropic Claude 系列</li>
+          <li data-i18n="aboutModelGemini">Google Gemini 系列</li>
+          <li data-i18n="aboutModelOthers">DeepSeek、通义千问、智谱等</li>
         </ul>
         <p class="hint" data-i18n="aboutUsage">使用方式：</p>
         <ol>

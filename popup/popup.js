@@ -146,7 +146,7 @@ els.refreshModels.addEventListener('click', async () => {
   const apiKey = els.apiKey.value;
   const apiUrl = els.apiUrl.value;
 
-  showStatus('正在获取模型列表...', 'info');
+  showStatus(i18nGet('statusFetchingModels'), 'info');
   try {
     const result = await chrome.runtime.sendMessage({
       action: 'getModels',
@@ -160,14 +160,14 @@ els.refreshModels.addEventListener('click', async () => {
         opt.value = m;
         datalist.appendChild(opt);
       });
-      showStatus('模型列表已更新', 'success');
+      showStatus(i18nGet('statusModelsUpdated'), 'success');
     } else {
       updateModelList(provider);
-      showStatus('已加载默认模型列表', 'info');
+      showStatus(i18nGet('statusModelsDefault'), 'info');
     }
   } catch {
     updateModelList(provider);
-    showStatus('已加载默认模型列表', 'info');
+    showStatus(i18nGet('statusModelsDefault'), 'info');
   }
 });
 
@@ -192,7 +192,7 @@ els.translateBtn.addEventListener('click', async () => {
 
   const settings = collectSettings();
   els.translateBtn.disabled = true;
-  els.translateBtn.textContent = '翻译中...';
+  els.translateBtn.textContent = i18nGet('btnTranslating');
 
   try {
     const result = await chrome.runtime.sendMessage({
@@ -211,7 +211,7 @@ els.translateBtn.addEventListener('click', async () => {
     showStatus(err.message, 'error');
   } finally {
     els.translateBtn.disabled = false;
-    els.translateBtn.textContent = '翻译';
+    els.translateBtn.textContent = i18nGet('translateBtn');
   }
 });
 
@@ -219,13 +219,13 @@ els.translateBtn.addEventListener('click', async () => {
 els.testBtn.addEventListener('click', async () => {
   const settings = collectSettings();
   if (!settings.apiKey && settings.provider !== 'ollama') {
-    showStatus('请填写 API Key', 'error');
+    showStatus(i18nGet('statusNeedApiKey'), 'error');
     return;
   }
 
   els.testBtn.disabled = true;
-  els.testBtn.textContent = '测试中...';
-  showStatus('正在测试连接...', 'info');
+  els.testBtn.textContent = i18nGet('btnTesting');
+  showStatus(i18nGet('statusTesting'), 'info');
 
   try {
     const result = await chrome.runtime.sendMessage({
@@ -234,15 +234,15 @@ els.testBtn.addEventListener('click', async () => {
     });
 
     if (result.success) {
-      showStatus(`✓ 连接成功！测试翻译: ${result.text}`, 'success');
+      showStatus(i18nGet('statusTestOk', result.text), 'success');
     } else {
       throw new Error(result.error);
     }
   } catch (err) {
-    showStatus(`✗ 连接失败: ${err.message}`, 'error');
+    showStatus(i18nGet('statusTestFail', err.message), 'error');
   } finally {
     els.testBtn.disabled = false;
-    els.testBtn.textContent = '测试连接';
+    els.testBtn.textContent = i18nGet('testBtn');
   }
 });
 
@@ -250,7 +250,7 @@ els.testBtn.addEventListener('click', async () => {
 els.saveBtn.addEventListener('click', async () => {
   const settings = collectSettings();
   await chrome.storage.sync.set(settings);
-  showStatus('✓ 设置已保存', 'success');
+  showStatus(i18nGet('statusSettingsSaved'), 'success');
 });
 
 function showStatus(msg, type) {
@@ -305,7 +305,7 @@ els.translateFullPage.addEventListener('click', async () => {
       try {
         await chrome.tabs.sendMessage(tab.id, msg);
       } catch (e) {
-        showStatus('无法注入翻译脚本', 'error');
+        showStatus(i18nGet('statusInjectFailed'), 'error');
       }
     }, 300);
   }
@@ -345,7 +345,7 @@ els.translateFile.addEventListener('click', async () => {
       }, 300);
     }
   } else {
-    showStatus('当前页面不是 PDF 或 Office 文件', 'error');
+    showStatus(i18nGet('statusNotAFile'), 'error');
   }
   window.close();
 });

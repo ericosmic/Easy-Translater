@@ -1,9 +1,11 @@
 {
   "extName": { "message": "Easy Translator" },
   "extDesc": { "message": "翻译网页、PDF、PPT、DOCX文件，支持自定义接入大模型" },
+
   "tabTranslate": { "message": "翻译" },
   "tabSettings": { "message": "设置" },
   "tabAbout": { "message": "关于" },
+
   "translatePage": { "message": "翻译整个页面" },
   "translatePageDesc": { "message": "替换当前页面所有文字为译文" },
   "translateFile": { "message": "翻译当前文件" },
@@ -13,41 +15,235 @@
   "autoDetect": { "message": "自动检测" },
   "translateBtn": { "message": "翻译" },
   "swapLang": { "message": "交换语言" },
+
+  "modelConfigTitle": { "message": "模型配置" },
   "providerLabel": { "message": "API 提供商" },
+  "providerOpenAI": { "message": "OpenAI 兼容 (OpenAI / DeepSeek / 通义千问 / 智谱等)" },
+  "providerOllama": { "message": "Ollama (本地模型)" },
+  "ollamaHintPre": { "message": "需要设置环境变量" },
+  "ollamaHintPost": { "message": "后启动 Ollama，否则会被 CORS 阻止" },
   "apiUrlLabel": { "message": "API 地址" },
   "apiKeyLabel": { "message": "API Key" },
+  "showHide": { "message": "显示/隐藏" },
   "modelLabel": { "message": "模型名称" },
+  "refreshModels": { "message": "刷新可用模型" },
   "styleLabel": { "message": "翻译风格" },
   "styleNatural": { "message": "自然流畅" },
   "styleFormal": { "message": "正式专业" },
+
+  "customPromptLabel": { "message": "自定义 Prompt" },
+  "promptDefaultOption": { "message": "默认 (根据翻译风格自动生成)" },
+  "promptPlaceholder": { "message": "你是一个专业翻译..." },
+  "promptDefaultPlaceholder": { "message": "使用默认 prompt（根据“翻译风格”自动生成）" },
+  "promptSaveNew": { "message": "保存为新模板" },
+  "promptUpdate": { "message": "更新当前模板" },
+  "promptDelete": { "message": "删除" },
+  "promptVarsLabel": { "message": "变量:" },
+  "promptVarSrc": { "message": "源语言" },
+  "promptVarTgt": { "message": "目标语言" },
+  "promptBatchNote": { "message": "系统会自动在批量翻译时加入 [#数字] 标记说明" },
+  "promptNamePrompt": { "message": "模板名称：" },
+  "promptDefaultName": {
+    "message": "自定义 $N$",
+    "placeholders": { "n": { "content": "$1" } }
+  },
+  "promptConfirmDelete": { "message": "确定删除此模板？" },
+  "statusPromptEmpty": { "message": "请先输入 prompt 内容" },
+  "statusPromptSaved": { "message": "✓ 已保存新模板" },
+  "statusPromptUpdated": { "message": "✓ 已更新模板" },
+  "statusPromptDeleted": { "message": "✓ 已删除模板" },
+
   "pageTranslateLabel": { "message": "页面翻译" },
-  "shortcutHint": { "message": "选中文本后按 Alt+T 快速翻译" },
+  "shortcutLabel": { "message": "快捷键" },
+  "shortcutHint": { "message": "选中文本后按" },
+  "shortcutHint2": { "message": "快速翻译" },
   "displayModeLabel": { "message": "显示模式" },
   "displayModeTooltip": { "message": "浮动提示框" },
   "displayModeInline": { "message": "替换原文" },
   "displayModeSidebar": { "message": "侧边栏" },
   "testBtn": { "message": "测试连接" },
   "saveBtn": { "message": "保存设置" },
+
   "aboutTitle": { "message": "Easy Translator v1.0.0" },
   "aboutDesc": { "message": "支持翻译网页、PDF、PPT、DOCX等文件内容。" },
   "aboutModels": { "message": "可接入多种大模型：" },
+  "aboutModelOpenAI": { "message": "OpenAI GPT 系列" },
+  "aboutModelAnthropic": { "message": "Anthropic Claude 系列" },
+  "aboutModelGemini": { "message": "Google Gemini 系列" },
+  "aboutModelOthers": { "message": "DeepSeek、通义千问、智谱等" },
   "aboutUsage": { "message": "使用方式：" },
   "aboutUsage1": { "message": "选中文本 → 右键 → 翻译选中文本" },
   "aboutUsage2": { "message": "选中文本 → 按 Alt+T" },
   "aboutUsage3": { "message": "点击图标打开弹窗输入文本" },
   "aboutPDF": { "message": "PDF 支持：打开 PDF 文件后自动加载翻译工具" },
-  "modelConfigTitle": { "message": "模型配置" },
-  "showHide": { "message": "显示/隐藏" },
-  "refreshModels": { "message": "刷新可用模型" },
-  "shortcutLabel": { "message": "快捷键" },
+
+  "statusFetchingModels": { "message": "正在获取模型列表..." },
+  "statusModelsUpdated": { "message": "模型列表已更新" },
+  "statusModelsDefault": { "message": "已加载默认模型列表" },
+  "statusNeedApiKey": { "message": "请填写 API Key" },
+  "statusTesting": { "message": "正在测试连接..." },
+  "statusTestOk": {
+    "message": "✓ 连接成功！测试翻译: $RESULT$",
+    "placeholders": { "result": { "content": "$1" } }
+  },
+  "statusTestFail": {
+    "message": "✗ 连接失败: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  },
+  "statusSettingsSaved": { "message": "✓ 设置已保存" },
+  "statusInjectFailed": { "message": "无法注入翻译脚本" },
+  "statusNotAFile": { "message": "当前页面不是 PDF 或 Office 文件" },
+  "btnTranslating": { "message": "翻译中..." },
+  "btnTesting": { "message": "测试中..." },
+
   "contextMenuSelection": { "message": "翻译选中文本" },
   "contextMenuPage": { "message": "翻译整个页面" },
+
+  "confirmReload": { "message": "翻译插件已更新，需要刷新页面才能继续使用。是否刷新？" },
+  "floatBtnTranslate": { "message": "翻译" },
+  "tooltipTitle": { "message": "翻译结果" },
+  "loading": { "message": "翻译中..." },
+  "actionCopy": { "message": "复制" },
+  "actionSwitch": { "message": "切换语言" },
+  "translateFailed": {
+    "message": "翻译失败: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  },
+  "sidebarOriginal": { "message": "原文" },
+  "sidebarTranslation": { "message": "译文" },
+  "alertNeedApiKey": { "message": "请先配置 API Key！（点击扩展图标 → 设置）" },
+
+  "bannerPreparing": { "message": "准备中..." },
+  "bannerScanning": { "message": "正在扫描页面文本..." },
+  "bannerNoText": { "message": "未找到可翻译的文本" },
+  "bannerCacheLoaded": { "message": "已加载缓存翻译" },
+  "bannerCacheLoadedCount": {
+    "message": "已加载缓存翻译 ($COUNT$ 段)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "bannerProgressStart": {
+    "message": "正在翻译... 0/$TOTAL$  (缓存命中 $CACHED$, 需翻译 $TOTAL2$)",
+    "placeholders": {
+      "total": { "content": "$1" },
+      "cached": { "content": "$2" },
+      "total2": { "content": "$3" }
+    }
+  },
+  "bannerProgress": {
+    "message": "正在翻译... $DONE$/$TOTAL$  ($CHUNK$/$CHUNKS$ 块)",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" },
+      "chunk": { "content": "$3" },
+      "chunks": { "content": "$4" }
+    }
+  },
+  "bannerDone": {
+    "message": "翻译完成！$DONE$/$TOTAL$ 段文本",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "bannerStopped": { "message": "翻译已停止" },
+  "bannerReverted": { "message": "已恢复原文" },
+  "bannerShowingTranslation": { "message": "显示译文" },
+  "titleClose": { "message": "关闭" },
+  "btnStop": { "message": "停止" },
+  "titleStop": { "message": "停止翻译" },
+  "btnShowTranslation": { "message": "显示译文" },
+  "btnShowOriginal": { "message": "原文" },
+
+  "pdfBtnTranslate": { "message": "翻译PDF" },
+  "pdfBtnTranslateThis": { "message": "翻译此PDF" },
+  "pdfNoText": { "message": "无法从 PDF 中提取文本。可能是扫描件或加密文档。" },
+  "pdfFailedMark": { "message": "[翻译失败]" },
+  "pdfPanelTitle": { "message": "PDF 翻译" },
+  "pdfPreparing": { "message": "准备翻译..." },
+  "pdfProgress": {
+    "message": "翻译进度: $DONE$/$TOTAL$",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "pdfDone": { "message": "✅ 翻译完成" },
+
   "viewerTitle": { "message": "PDF 翻译" },
   "viewerTranslate": { "message": "翻译" },
-  "viewerToggleOrig": { "message": "显示原文" },
-  "viewerToggleTrans": { "message": "显示译文" },
-  "viewerSourceLang": { "message": "源语言" },
-  "viewerTargetLang": { "message": "目标语言" },
-  "viewerPageOf": { "message": "共" },
-  "viewerPages": { "message": "页" }
+  "viewerToggleOrig": { "message": "原文" },
+  "viewerToggleTrans": { "message": "译文" },
+  "viewerMissingParam": { "message": "缺少文件参数" },
+  "viewerNoPdfData": { "message": "无法加载 PDF 数据" },
+  "viewerParseFailed": {
+    "message": "PDF 解析失败: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  },
+  "viewerRendering": {
+    "message": "正在渲染... $PAGE$/$TOTAL$ 页",
+    "placeholders": {
+      "page": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "viewerTranslatingProgress": {
+    "message": "翻译中... $DONE$/$TOTAL$",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "viewerTransFailed": { "message": "(翻译失败)" },
+  "viewerLoadingFile": { "message": "正在加载文件..." },
+  "viewerNoFileData": { "message": "无法加载文件数据" },
+  "viewerEmptyFile": { "message": "文件内容为空" },
+  "viewerSegments": {
+    "message": "共 $COUNT$ 段",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "viewerPagesCount": {
+    "message": "共 $COUNT$ 页",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+
+  "promptSrcAuto": { "message": "原文" },
+  "promptBatch": {
+    "message": "你是一个专业翻译。请将以下$SRC$翻译为$TGT$。文本中的每个段落以“[#数字]”标记开头。请逐一翻译每个段落，严格保持“[#数字]”标记和段落顺序不变。不要合并或跳过任何段落。只返回翻译结果，不要任何额外内容。",
+    "placeholders": {
+      "src": { "content": "$1" },
+      "tgt": { "content": "$2" }
+    }
+  },
+  "promptFormal": {
+    "message": "你是一个专业翻译。请将以下$SRC$翻译为$TGT$。使用正式、专业的语气。只返回翻译结果，不要任何额外内容。",
+    "placeholders": {
+      "src": { "content": "$1" },
+      "tgt": { "content": "$2" }
+    }
+  },
+  "promptNatural": {
+    "message": "你是一个专业翻译。请将以下$SRC$翻译为$TGT$。使用自然流畅的口语。只返回翻译结果，不要任何额外内容。",
+    "placeholders": {
+      "src": { "content": "$1" },
+      "tgt": { "content": "$2" }
+    }
+  },
+  "promptBatchSuffix": { "message": "文本中的每个段落以“[#数字]”标记开头。请逐一翻译每个段落，严格保持“[#数字]”标记和段落顺序不变。不要合并或跳过任何段落。" },
+
+  "errNoApiKey": { "message": "请先配置 API Key" },
+  "errNoText": { "message": "没有待翻译的文本" },
+  "errApi": {
+    "message": "API 错误 ($STATUS$): $BODY$",
+    "placeholders": {
+      "status": { "content": "$1" },
+      "body": { "content": "$2" }
+    }
+  },
+  "errOllamaConnect": { "message": "无法连接 Ollama，请确认 Ollama 已启动（ollama serve）" },
+  "errOllamaCors": { "message": "Ollama 拒绝了扩展请求（CORS），请在启动 Ollama 时设置环境变量：OLLAMA_ORIGINS=*" },
+  "errPdfNoText": { "message": "无法从PDF中提取文本，或PDF为扫描件" },
+  "errPdfFailed": {
+    "message": "PDF处理失败: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  }
 }

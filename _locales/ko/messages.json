@@ -1,9 +1,11 @@
 {
   "extName": { "message": "Easy Translator" },
   "extDesc": { "message": "웹페이지, PDF, PPT, DOCX 파일을 커스텀 LLM으로 번역" },
+
   "tabTranslate": { "message": "번역" },
   "tabSettings": { "message": "설정" },
   "tabAbout": { "message": "정보" },
+
   "translatePage": { "message": "전체 페이지 번역" },
   "translatePageDesc": { "message": "페이지의 모든 텍스트를 번역문으로 교체" },
   "translateFile": { "message": "현재 파일 번역" },
@@ -13,41 +15,235 @@
   "autoDetect": { "message": "자동 감지" },
   "translateBtn": { "message": "번역" },
   "swapLang": { "message": "언어 교환" },
+
+  "modelConfigTitle": { "message": "모델 설정" },
   "providerLabel": { "message": "API 제공자" },
+  "providerOpenAI": { "message": "OpenAI 호환 (OpenAI / DeepSeek / Qwen / Zhipu 등)" },
+  "providerOllama": { "message": "Ollama (로컬 모델)" },
+  "ollamaHintPre": { "message": "환경 변수" },
+  "ollamaHintPost": { "message": "를 설정한 뒤 Ollama를 실행하세요. 그렇지 않으면 CORS로 차단됩니다" },
   "apiUrlLabel": { "message": "API URL" },
   "apiKeyLabel": { "message": "API 키" },
+  "showHide": { "message": "표시/숨기기" },
   "modelLabel": { "message": "모델 이름" },
+  "refreshModels": { "message": "모델 새로고침" },
   "styleLabel": { "message": "번역 스타일" },
   "styleNatural": { "message": "자연스럽고 유창하게" },
   "styleFormal": { "message": "격식 있고 전문적으로" },
+
+  "customPromptLabel": { "message": "사용자 지정 프롬프트" },
+  "promptDefaultOption": { "message": "기본값 (번역 스타일에서 자동 생성)" },
+  "promptPlaceholder": { "message": "당신은 전문 번역가입니다..." },
+  "promptDefaultPlaceholder": { "message": "기본 프롬프트 사용（\"번역 스타일\"에서 자동 생성）" },
+  "promptSaveNew": { "message": "새 템플릿으로 저장" },
+  "promptUpdate": { "message": "현재 템플릿 업데이트" },
+  "promptDelete": { "message": "삭제" },
+  "promptVarsLabel": { "message": "변수:" },
+  "promptVarSrc": { "message": "원본 언어" },
+  "promptVarTgt": { "message": "대상 언어" },
+  "promptBatchNote": { "message": "일괄 번역 시 [#번호] 마커 설명이 자동으로 추가됩니다" },
+  "promptNamePrompt": { "message": "템플릿 이름:" },
+  "promptDefaultName": {
+    "message": "사용자 지정 $N$",
+    "placeholders": { "n": { "content": "$1" } }
+  },
+  "promptConfirmDelete": { "message": "이 템플릿을 삭제할까요?" },
+  "statusPromptEmpty": { "message": "먼저 프롬프트 내용을 입력하세요" },
+  "statusPromptSaved": { "message": "✓ 새 템플릿을 저장했습니다" },
+  "statusPromptUpdated": { "message": "✓ 템플릿을 업데이트했습니다" },
+  "statusPromptDeleted": { "message": "✓ 템플릿을 삭제했습니다" },
+
   "pageTranslateLabel": { "message": "페이지 번역" },
-  "shortcutHint": { "message": "텍스트 선택 후 Alt+T로 빠른 번역" },
+  "shortcutLabel": { "message": "단축키" },
+  "shortcutHint": { "message": "텍스트 선택 후" },
+  "shortcutHint2": { "message": "로 빠른 번역" },
   "displayModeLabel": { "message": "표시 모드" },
   "displayModeTooltip": { "message": "플로팅 툴팁" },
   "displayModeInline": { "message": "인라인 교체" },
   "displayModeSidebar": { "message": "사이드바" },
   "testBtn": { "message": "연결 테스트" },
   "saveBtn": { "message": "설정 저장" },
-  "aboutTitle": { "message": "만능 번역기 v1.0.0" },
+
+  "aboutTitle": { "message": "Easy Translator v1.0.0" },
   "aboutDesc": { "message": "웹페이지, PDF, PPT, DOCX 등을 번역합니다." },
   "aboutModels": { "message": "다양한 LLM 백엔드 지원:" },
+  "aboutModelOpenAI": { "message": "OpenAI GPT 계열" },
+  "aboutModelAnthropic": { "message": "Anthropic Claude 계열" },
+  "aboutModelGemini": { "message": "Google Gemini 계열" },
+  "aboutModelOthers": { "message": "DeepSeek, Qwen, Zhipu 등" },
   "aboutUsage": { "message": "사용 방법:" },
   "aboutUsage1": { "message": "텍스트 선택 → 우클릭 → 번역" },
   "aboutUsage2": { "message": "텍스트 선택 → Alt+T 누르기" },
   "aboutUsage3": { "message": "확장 프로그램 아이콘 클릭하여 텍스트 입력" },
   "aboutPDF": { "message": "PDF: 번역 뷰어에서 자동으로 열립니다" },
-  "modelConfigTitle": { "message": "모델 설정" },
-  "showHide": { "message": "표시/숨기기" },
-  "refreshModels": { "message": "모델 새로고침" },
-  "shortcutLabel": { "message": "단축키" },
+
+  "statusFetchingModels": { "message": "모델 목록을 가져오는 중..." },
+  "statusModelsUpdated": { "message": "모델 목록을 업데이트했습니다" },
+  "statusModelsDefault": { "message": "기본 모델 목록을 불러왔습니다" },
+  "statusNeedApiKey": { "message": "API 키를 입력하세요" },
+  "statusTesting": { "message": "연결을 테스트하는 중..." },
+  "statusTestOk": {
+    "message": "✓ 연결 성공! 테스트 번역: $RESULT$",
+    "placeholders": { "result": { "content": "$1" } }
+  },
+  "statusTestFail": {
+    "message": "✗ 연결 실패: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  },
+  "statusSettingsSaved": { "message": "✓ 설정을 저장했습니다" },
+  "statusInjectFailed": { "message": "번역 스크립트를 주입할 수 없습니다" },
+  "statusNotAFile": { "message": "현재 페이지는 PDF 또는 Office 파일이 아닙니다" },
+  "btnTranslating": { "message": "번역 중..." },
+  "btnTesting": { "message": "테스트 중..." },
+
   "contextMenuSelection": { "message": "선택한 텍스트 번역" },
   "contextMenuPage": { "message": "전체 페이지 번역" },
+
+  "confirmReload": { "message": "번역 확장 프로그램이 업데이트되었습니다. 계속 사용하려면 페이지를 새로고침해야 합니다. 새로고침할까요?" },
+  "floatBtnTranslate": { "message": "번역" },
+  "tooltipTitle": { "message": "번역 결과" },
+  "loading": { "message": "번역 중..." },
+  "actionCopy": { "message": "복사" },
+  "actionSwitch": { "message": "언어 전환" },
+  "translateFailed": {
+    "message": "번역 실패: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  },
+  "sidebarOriginal": { "message": "원문" },
+  "sidebarTranslation": { "message": "번역문" },
+  "alertNeedApiKey": { "message": "먼저 API 키를 설정하세요 (확장 프로그램 아이콘 → 설정)" },
+
+  "bannerPreparing": { "message": "준비 중..." },
+  "bannerScanning": { "message": "페이지 텍스트를 스캔하는 중..." },
+  "bannerNoText": { "message": "번역할 텍스트를 찾을 수 없습니다" },
+  "bannerCacheLoaded": { "message": "캐시된 번역을 불러왔습니다" },
+  "bannerCacheLoadedCount": {
+    "message": "캐시된 번역을 불러왔습니다 ($COUNT$개 단락)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "bannerProgressStart": {
+    "message": "번역 중... 0/$TOTAL$  (캐시 $CACHED$, 번역 필요 $TOTAL2$)",
+    "placeholders": {
+      "total": { "content": "$1" },
+      "cached": { "content": "$2" },
+      "total2": { "content": "$3" }
+    }
+  },
+  "bannerProgress": {
+    "message": "번역 중... $DONE$/$TOTAL$  ($CHUNK$/$CHUNKS$ 블록)",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" },
+      "chunk": { "content": "$3" },
+      "chunks": { "content": "$4" }
+    }
+  },
+  "bannerDone": {
+    "message": "번역 완료! $DONE$/$TOTAL$개 단락",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "bannerStopped": { "message": "번역을 중지했습니다" },
+  "bannerReverted": { "message": "원문으로 되돌렸습니다" },
+  "bannerShowingTranslation": { "message": "번역문 표시 중" },
+  "titleClose": { "message": "닫기" },
+  "btnStop": { "message": "중지" },
+  "titleStop": { "message": "번역 중지" },
+  "btnShowTranslation": { "message": "번역문 보기" },
+  "btnShowOriginal": { "message": "원문" },
+
+  "pdfBtnTranslate": { "message": "PDF 번역" },
+  "pdfBtnTranslateThis": { "message": "이 PDF 번역" },
+  "pdfNoText": { "message": "이 PDF에서 텍스트를 추출할 수 없습니다. 스캔본이거나 암호화된 문서일 수 있습니다." },
+  "pdfFailedMark": { "message": "[번역 실패]" },
+  "pdfPanelTitle": { "message": "PDF 번역" },
+  "pdfPreparing": { "message": "번역 준비 중..." },
+  "pdfProgress": {
+    "message": "번역 진행률: $DONE$/$TOTAL$",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "pdfDone": { "message": "✅ 번역 완료" },
+
   "viewerTitle": { "message": "PDF 번역" },
   "viewerTranslate": { "message": "번역" },
-  "viewerToggleOrig": { "message": "원문 보기" },
-  "viewerToggleTrans": { "message": "번역문 보기" },
-  "viewerSourceLang": { "message": "소스" },
-  "viewerTargetLang": { "message": "타겟" },
-  "viewerPageOf": { "message": "전체" },
-  "viewerPages": { "message": "페이지" }
+  "viewerToggleOrig": { "message": "원문" },
+  "viewerToggleTrans": { "message": "번역문" },
+  "viewerMissingParam": { "message": "파일 매개변수가 없습니다" },
+  "viewerNoPdfData": { "message": "PDF 데이터를 불러올 수 없습니다" },
+  "viewerParseFailed": {
+    "message": "PDF 분석 실패: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  },
+  "viewerRendering": {
+    "message": "렌더링 중... $PAGE$/$TOTAL$ 페이지",
+    "placeholders": {
+      "page": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "viewerTranslatingProgress": {
+    "message": "번역 중... $DONE$/$TOTAL$",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "viewerTransFailed": { "message": "(번역 실패)" },
+  "viewerLoadingFile": { "message": "파일을 불러오는 중..." },
+  "viewerNoFileData": { "message": "파일 데이터를 불러올 수 없습니다" },
+  "viewerEmptyFile": { "message": "파일 내용이 비어 있습니다" },
+  "viewerSegments": {
+    "message": "총 $COUNT$개 단락",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "viewerPagesCount": {
+    "message": "총 $COUNT$페이지",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+
+  "promptSrcAuto": { "message": "원문" },
+  "promptBatch": {
+    "message": "당신은 전문 번역가입니다. 다음 $SRC$을(를) $TGT$(으)로 번역하세요. 텍스트의 각 단락은 \"[#번호]\" 마커로 시작합니다. 각 단락을 하나씩 번역하고 \"[#번호]\" 마커와 단락 순서를 그대로 유지하세요. 단락을 합치거나 건너뛰지 마세요. 번역 결과만 반환하고 추가 내용은 포함하지 마세요.",
+    "placeholders": {
+      "src": { "content": "$1" },
+      "tgt": { "content": "$2" }
+    }
+  },
+  "promptFormal": {
+    "message": "당신은 전문 번역가입니다. 다음 $SRC$을(를) $TGT$(으)로 번역하세요. 격식 있고 전문적인 어조를 사용하세요. 번역 결과만 반환하고 추가 내용은 포함하지 마세요.",
+    "placeholders": {
+      "src": { "content": "$1" },
+      "tgt": { "content": "$2" }
+    }
+  },
+  "promptNatural": {
+    "message": "당신은 전문 번역가입니다. 다음 $SRC$을(를) $TGT$(으)로 번역하세요. 자연스럽고 유창한 구어체를 사용하세요. 번역 결과만 반환하고 추가 내용은 포함하지 마세요.",
+    "placeholders": {
+      "src": { "content": "$1" },
+      "tgt": { "content": "$2" }
+    }
+  },
+  "promptBatchSuffix": { "message": "텍스트의 각 단락은 \"[#번호]\" 마커로 시작합니다. 각 단락을 하나씩 번역하고 \"[#번호]\" 마커와 단락 순서를 그대로 유지하세요. 단락을 합치거나 건너뛰지 마세요." },
+
+  "errNoApiKey": { "message": "먼저 API 키를 설정하세요" },
+  "errNoText": { "message": "번역할 텍스트가 없습니다" },
+  "errApi": {
+    "message": "API 오류 ($STATUS$): $BODY$",
+    "placeholders": {
+      "status": { "content": "$1" },
+      "body": { "content": "$2" }
+    }
+  },
+  "errOllamaConnect": { "message": "Ollama에 연결할 수 없습니다. Ollama가 실행 중인지 확인하세요 (ollama serve)" },
+  "errOllamaCors": { "message": "Ollama가 확장 프로그램 요청을 거부했습니다 (CORS). Ollama 실행 시 환경 변수 OLLAMA_ORIGINS=* 를 설정하세요" },
+  "errPdfNoText": { "message": "PDF에서 텍스트를 추출할 수 없거나 스캔 문서입니다" },
+  "errPdfFailed": {
+    "message": "PDF 처리 실패: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  }
 }

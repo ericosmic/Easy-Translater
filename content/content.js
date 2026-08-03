@@ -5,6 +5,16 @@
   // 跳过 PDF 页面（由 pdf-content.js 处理）
   if (isPDFPage()) return;
 
+  // i18n — content scripts can call chrome.i18n directly; falls back to the key
+  // so a missing message stays visible instead of rendering as an empty label.
+  function t(key, ...subs) {
+    if (typeof chrome === 'undefined' || !chrome.i18n) return key;
+    const msg = subs.length
+      ? chrome.i18n.getMessage(key, subs.map(String))
+      : chrome.i18n.getMessage(key);
+    return msg || key;
+  }
+
   // ─── 状态 ──────────────────────────────────────────
   let floatBtn = null;
   let tooltip = null;
@@ -48,7 +58,7 @@
     console.warn('Extension reloaded detected, reloading page to re-inject content script');
     try {
       // Try to reconnect by triggering a page reload
-      if (confirm('翻译插件已更新，需要刷新页面才能继续使用。是否刷新？')) {
+      if (confirm(t('confirmReload'))) {
         window.location.reload();
       }
     } catch {}
@@ -137,7 +147,7 @@
     if (!floatBtn) {
       floatBtn = document.createElement('button');
       floatBtn.className = 'translate-float-btn';
-      floatBtn.innerHTML = '🌐 翻译';
+      floatBtn.textContent = '🌐 ' + t('floatBtnTranslate');
       floatBtn.addEventListener('click', (e) => {
         e.stopPropagation();
         showTranslation(selectedText);
@@ -178,13 +188,13 @@
       tooltip.className = 'translate-tooltip';
       tooltip.innerHTML = `
         <div class="tooltip-header">
-          <span>翻译结果</span>
+          <span>${escapeHtml(t('tooltipTitle'))}</span>
           <button class="tooltip-close">✕</button>
         </div>
-        <div class="tooltip-content"><div class="tooltip-loading">翻译中...</div></div>
+        <div class="tooltip-content"><div class="tooltip-loading">${escapeHtml(t('loading'))}</div></div>
         <div class="tooltip-actions">
-          <button class="action-copy">复制</button>
-          <button class="action-switch">切换语言</button>
+          <button class="action-copy">${escapeHtml(t('actionCopy'))}</button>
+          <button class="action-switch">${escapeHtml(t('actionSwitch'))}</button>
         </div>`;
       tooltip.querySelector('.tooltip-close').addEventListener('click', removeTooltip);
       tooltip.querySelector('.action-copy').addEventListener('click', () => {
@@ -220,10 +230,10 @@
     if (langOverride) settings.targetLang = langOverride;
     try {
       const result = await chrome.runtime.sendMessage({ action: 'translate', text, settings });
-      contentEl.textContent = result.success ? result.text : `翻译失败: ${result.error}`;
+      contentEl.textContent = result.success ? result.text : t('translateFailed', result.error);
     } catch (err) {
       if (isExtensionInvalidated(err)) { handleExtensionReload(); return; }
-      contentEl.textContent = `翻译失败: ${err.message}`;
+      contentEl.textContent = t('translateFailed', err.message);
     }
   }
 
@@ -231,7 +241,7 @@
     const settings = await loadSettings();
     [settings.sourceLang, settings.targetLang] = [settings.targetLang, settings.sourceLang === 'auto' ? 'English' : settings.sourceLang];
     const contentEl = tooltip?.querySelector('.tooltip-content');
-    if (contentEl) contentEl.innerHTML = '<div class="tooltip-loading">翻译中...</div>';
+    if (contentEl) contentEl.innerHTML = `<div class="tooltip-loading">${escapeHtml(t('loading'))}</div>`;
     doTranslate(text, settings.targetLang);
   }
 
@@ -252,25 +262,25 @@
           <button class="sidebar-close">✕</button>
         </div>
         <div class="translate-sidebar-content">
-          <div style="margin-bottom:8px;font-size:13px;color:#666">原文</div>
+          <div style="margin-bottom:8px;font-size:13px;color:#666">${escapeHtml(t('sidebarOriginal'))}</div>
           <div class="sidebar-original" style="margin-bottom:16px;padding:12px;background:#f5f5f5;border-radius:8px;font-size:14px;line-height:1.6">${escapeHtml(text)}</div>
-          <div style="margin-bottom:8px;font-size:13px;color:#666">译文</div>
-          <div class="sidebar-translated" style="padding:12px;background:#f0f4ff;border-radius:8px;font-size:14px;line-height:1.6"><div class="tooltip-loading">翻译中...</div></div>
+          <div style="margin-bottom:8px;font-size:13px;color:#666">${escapeHtml(t('sidebarTranslation'))}</div>
+          <div class="sidebar-translated" style="padding:12px;background:#f0f4ff;border-radius:8px;font-size:14px;line-height:1.6"><div class="tooltip-loading">${escapeHtml(t('loading'))}</div></div>
         </div>`;
       sidebar.querySelector('.sidebar-close').addEventListener('click', () => sidebar.remove());
       document.body.appendChild(sidebar);
     } else {
       sidebar.querySelector('.sidebar-original').textContent = text;
-      sidebar.querySelector('.sidebar-translated').innerHTML = '<div class="tooltip-loading">翻译中...</div>';
+      sidebar.querySelector('.sidebar-translated').innerHTML = `<div class="tooltip-loading">${escapeHtml(t('loading'))}</div>`;
     }
     loadSettings().then(settings => {
       chrome.runtime.sendMessage({ action: 'translate', text, settings }).then(result => {
         const el = sidebar?.querySelector('.sidebar-translated');
-        if (el) el.textContent = result.success ? result.text : `翻译失败: ${result.error}`;
+        if (el) el.textContent = result.success ? result.text : t('translateFailed', result.error);
       }).catch(err => {
         if (isExtensionInvalidated(err)) { handleExtensionReload(); return; }
         const el = sidebar?.querySelector('.sidebar-translated');
-        if (el) el.textContent = `翻译失败: ${err.message}`;
+        if (el) el.textContent = t('translateFailed', err.message);
       });
     });
   }
@@ -291,7 +301,7 @@
         const banner = createBanner();
         document.body.prepend(banner);
         fullPageState.banner = banner;
-        updateBanner(banner, 'done', '已加载缓存翻译');
+        updateBanner(banner, 'done', t('bannerCacheLoaded'));
         banner.querySelector('.toggle-btn').style.display = 'inline-block';
         setupCloseButton(banner);
         showTranslated();
@@ -307,17 +317,17 @@
     if (targetLangOverride) settings.targetLang = targetLangOverride;
 
     if (!settings.apiKey && settings.provider !== 'ollama') {
-      alert('请先配置 API Key！（点击扩展图标 → 设置）');
+      alert(t('alertNeedApiKey'));
       return;
     }
 
     const banner = createBanner();
     document.body.prepend(banner);
 
-    updateBanner(banner, 'collecting', '正在扫描页面文本...');
+    updateBanner(banner, 'collecting', t('bannerScanning'));
     const textNodes = collectTextNodes();
     if (textNodes.length === 0) {
-      updateBanner(banner, 'error', '未找到可翻译的文本');
+      updateBanner(banner, 'error', t('bannerNoText'));
       setTimeout(() => banner.remove(), 2000);
       return;
     }
@@ -353,7 +363,7 @@
 
     // 全部命中缓存 → 跳过 API
     if (uncachedNodes.length === 0) {
-      updateBanner(banner, 'done', `已加载缓存翻译 (${cachedCount} 段)`);
+      updateBanner(banner, 'done', t('bannerCacheLoadedCount', cachedCount));
       const toggleBtn = banner.querySelector('.toggle-btn');
       toggleBtn.style.display = 'inline-block';
       toggleBtn.onclick = () => revertFullPage();
@@ -367,7 +377,7 @@
     abortFlag = { aborted: false };
     setupStopButton(banner, abortFlag, originalTexts);
     updateBanner(banner, 'progress',
-      `正在翻译... 0/${uncachedNodes.length}  (缓存命中 ${cachedCount}, 需翻译 ${uncachedNodes.length})`);
+      t('bannerProgressStart', uncachedNodes.length, cachedCount, uncachedNodes.length));
 
     const resultMap = await translateChunksParallel(chunks, settings, banner, uncachedNodes.length, abortFlag);
 
@@ -382,7 +392,7 @@
     resultMap.forEach((translated, node) => translatedTexts.set(node, translated));
 
     const freshCount = resultMap.size;
-    updateBanner(banner, 'done', `翻译完成！${cachedCount + freshCount}/${total} 段文本`);
+    updateBanner(banner, 'done', t('bannerDone', cachedCount + freshCount, total));
     const toggleBtn = banner.querySelector('.toggle-btn');
     toggleBtn.style.display = 'inline-block';
     toggleBtn.onclick = () => revertFullPage();
@@ -435,7 +445,7 @@
   function setupCloseButton(banner) {
     const btn = banner.querySelector('.ft-close-btn');
     btn.textContent = '✕';
-    btn.title = '关闭';
+    btn.title = t('titleClose');
     const origPadding = banner._origPadding;
     btn.replaceWith(btn.cloneNode(true));
     const newBtn = banner.querySelector('.ft-close-btn');
@@ -454,14 +464,14 @@
   // 设置停止按钮（翻译进行中）
   function setupStopButton(banner, flag, originalTexts) {
     const btn = banner.querySelector('.ft-close-btn');
-    btn.textContent = '⏹ 停止';
-    btn.title = '停止翻译';
+    btn.textContent = '⏹ ' + t('btnStop');
+    btn.title = t('titleStop');
     const origPadding = banner._origPadding;
     btn.replaceWith(btn.cloneNode(true));
     const newBtn = banner.querySelector('.ft-close-btn');
     newBtn.addEventListener('click', () => {
       flag.aborted = true;
-      updateBanner(banner, 'error', '翻译已停止');
+      updateBanner(banner, 'error', t('bannerStopped'));
       // 通知后台终止所有进行中的 HTTP 请求
       chrome.runtime.sendMessage({ action: 'abortTranslation' }).catch(() => {});
     });
@@ -551,7 +561,7 @@
         completedNodes += chunk.nodes.length;
         completedChunks++;
         updateBanner(banner, 'progress',
-          `正在翻译... ${Math.min(completedNodes, totalNodes)}/${totalNodes}  (${completedChunks}/${chunks.length} 块)`);
+          t('bannerProgress', Math.min(completedNodes, totalNodes), totalNodes, completedChunks, chunks.length));
       }
     }
 
@@ -595,10 +605,10 @@
     });
     fullPageState.isShowingTranslation = false;
     if (fullPageState.banner) {
-      updateBanner(fullPageState.banner, 'done', '已恢复原文');
+      updateBanner(fullPageState.banner, 'done', t('bannerReverted'));
       const toggleBtn = fullPageState.banner.querySelector('.toggle-btn');
       if (toggleBtn) {
-        toggleBtn.textContent = '🌐 显示译文';
+        toggleBtn.textContent = '🌐 ' + t('btnShowTranslation');
         toggleBtn.onclick = () => showTranslated();
       }
     }
@@ -618,10 +628,10 @@
     });
     fullPageState.isShowingTranslation = true;
     if (fullPageState.banner) {
-      updateBanner(fullPageState.banner, 'done', '显示译文');
+      updateBanner(fullPageState.banner, 'done', t('bannerShowingTranslation'));
       const toggleBtn = fullPageState.banner.querySelector('.toggle-btn');
       if (toggleBtn) {
-        toggleBtn.textContent = '↩ 原文';
+        toggleBtn.textContent = '↩ ' + t('btnShowOriginal');
         toggleBtn.onclick = () => revertFullPage();
       }
     }
@@ -645,9 +655,9 @@
       <div class="ft-banner-inner">
         <span class="ft-logo">🌐</span>
         <span class="ft-text">Easy Translator</span>
-        <span class="ft-status">准备中...</span>
+        <span class="ft-status">${escapeHtml(t('bannerPreparing'))}</span>
         <div class="ft-progress-bar"><div class="ft-progress-fill"></div></div>
-        <button class="ft-toggle-btn toggle-btn" style="display:none">↩ 原文</button>
+        <button class="ft-toggle-btn toggle-btn" style="display:none">↩ ${escapeHtml(t('btnShowOriginal'))}</button>
         <button class="ft-close-btn">✕</button>
       </div>`;
     document.body.appendChild(banner);

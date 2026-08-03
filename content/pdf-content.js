@@ -11,6 +11,15 @@
 
   if (!isPDFViewer) return;
 
+  // i18n — content scripts can call chrome.i18n directly; falls back to the key
+  function t(key, ...subs) {
+    if (typeof chrome === 'undefined' || !chrome.i18n) return key;
+    const msg = subs.length
+      ? chrome.i18n.getMessage(key, subs.map(String))
+      : chrome.i18n.getMessage(key);
+    return msg || key;
+  }
+
   // 暴露函数供 content.js 调用
   window.translatePDFFile = () => {
     waitForPDF().then(() => translatePDF());
@@ -65,7 +74,7 @@
 
   function addToolbarButton(toolbar) {
     const btn = document.createElement('button');
-    btn.textContent = '🌐 翻译PDF';
+    btn.textContent = '🌐 ' + t('pdfBtnTranslate');
     Object.assign(btn.style, {
       padding: '4px 12px',
       margin: '0 8px',
@@ -83,7 +92,7 @@
 
   function addFloatingButton() {
     const btn = document.createElement('div');
-    btn.textContent = '🌐 翻译此PDF';
+    btn.textContent = '🌐 ' + t('pdfBtnTranslateThis');
     Object.assign(btn.style, {
       position: 'fixed',
       top: '12px',
@@ -107,7 +116,7 @@
   async function translatePDF() {
     const text = extractPDFText();
     if (!text || text.trim().length < 10) {
-      alert('无法从 PDF 中提取文本。可能是扫描件或加密文档。');
+      alert(t('pdfNoText'));
       return;
     }
 
@@ -127,12 +136,12 @@
         const result = await translateBatch(batch, settings);
         translated.push(...result);
       } catch (err) {
-        translated.push(...batch.map(() => '[翻译失败]'));
+        translated.push(...batch.map(() => t('pdfFailedMark')));
       }
       // Update progress
       const progress = overlay.querySelector('.pdf-progress');
       if (progress) {
-        progress.textContent = `翻译进度: ${Math.min(i + 3, paragraphs.length)}/${paragraphs.length}`;
+        progress.textContent = t('pdfProgress', Math.min(i + 3, paragraphs.length), paragraphs.length);
       }
     }
 
@@ -154,7 +163,7 @@
     }
 
     const progress = overlay.querySelector('.pdf-progress');
-    if (progress) progress.textContent = '✅ 翻译完成';
+    if (progress) progress.textContent = t('pdfDone');
   }
 
   function extractPDFText() {
@@ -215,8 +224,8 @@
 
     panel.innerHTML = `
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
-        <h2 style="margin:0;font-size:18px;color:#667eea">📄 PDF 翻译</h2>
-        <div class="pdf-progress" style="font-size:13px;color:#666">准备翻译...</div>
+        <h2 style="margin:0;font-size:18px;color:#667eea">📄 ${escapeHtml(t('pdfPanelTitle'))}</h2>
+        <div class="pdf-progress" style="font-size:13px;color:#666">${escapeHtml(t('pdfPreparing'))}</div>
         <button class="pdf-close" style="background:none;border:none;font-size:20px;cursor:pointer;color:#999">✕</button>
       </div>
       <div class="pdf-content" style="font-size:14px;line-height:1.8"></div>
@@ -246,9 +255,9 @@
           text,
           settings
         });
-        results.push(res.success ? res.text : '[翻译失败]');
+        results.push(res.success ? res.text : t('pdfFailedMark'));
       } catch {
-        results.push('[翻译失败]');
+        results.push(t('pdfFailedMark'));
       }
     }
     return results;

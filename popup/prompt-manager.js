@@ -9,7 +9,11 @@ function loadPrompts(saved, activeId) {
   const sel = document.getElementById('promptSelector');
   if (!sel) return;
 
-  sel.innerHTML = '<option value="default">默认 (根据翻译风格自动生成)</option>';
+  sel.innerHTML = '';
+  const defaultOpt = document.createElement('option');
+  defaultOpt.value = 'default';
+  defaultOpt.textContent = i18nGet('promptDefaultOption');
+  sel.appendChild(defaultOpt);
 
   Object.entries(customPrompts).forEach(([id, p]) => {
     const opt = document.createElement('option');
@@ -32,7 +36,7 @@ function updatePromptText() {
   const id = sel.value;
   if (id === 'default') {
     text.value = '';
-    text.placeholder = '使用默认 prompt（根据"翻译风格"自动生成）';
+    text.placeholder = i18nGet('promptDefaultPlaceholder');
     if (updateBtn) updateBtn.disabled = true;
     if (deleteBtn) deleteBtn.disabled = true;
   } else {
@@ -66,16 +70,16 @@ function initPromptManager(showStatusFn) {
       if (!text) return;
       const content = text.value.trim();
       if (!content) {
-        showStatusFn('请先输入 prompt 内容', 'error');
+        showStatusFn(i18nGet('statusPromptEmpty'), 'error');
         return;
       }
-      const name = prompt('模板名称：', `自定义 ${Object.keys(customPrompts).length + 1}`);
+      const name = prompt(i18nGet('promptNamePrompt'), i18nGet('promptDefaultName', Object.keys(customPrompts).length + 1));
       if (!name) return;
 
       const id = 'custom_' + Date.now();
       customPrompts[id] = { name, template: content };
       loadPrompts(customPrompts, id);
-      showStatusFn('✓ 已保存新模板', 'success');
+      showStatusFn(i18nGet('statusPromptSaved'), 'success');
     });
   }
 
@@ -87,11 +91,11 @@ function initPromptManager(showStatusFn) {
       if (!text) return;
       const content = text.value.trim();
       if (!content) {
-        showStatusFn('请先输入 prompt 内容', 'error');
+        showStatusFn(i18nGet('statusPromptEmpty'), 'error');
         return;
       }
       customPrompts[id].template = content;
-      showStatusFn('✓ 已更新模板', 'success');
+      showStatusFn(i18nGet('statusPromptUpdated'), 'success');
     });
   }
 
@@ -100,10 +104,10 @@ function initPromptManager(showStatusFn) {
     deleteBtn.addEventListener('click', () => {
       const id = sel.value;
       if (id === 'default') return;
-      if (!confirm('确定删除此模板？')) return;
+      if (!confirm(i18nGet('promptConfirmDelete'))) return;
       delete customPrompts[id];
       loadPrompts(customPrompts, 'default');
-      showStatusFn('✓ 已删除模板', 'success');
+      showStatusFn(i18nGet('statusPromptDeleted'), 'success');
     });
   }
 }
