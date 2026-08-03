@@ -4,6 +4,9 @@
 
   pdfjsLib.GlobalWorkerOptions.workerSrc = chrome.runtime.getURL('viewer/pdf.worker.min.js');
 
+  // i18n.js is loaded first and exposes window.i18nGet
+  const t = (key, ...subs) => (window.i18nGet ? window.i18nGet(key, ...subs) : key);
+
   const SCALE = 1.5;
   const MAX_PAGES = 100;
   const BATCH_SIZE = 8;
@@ -16,6 +19,7 @@
   let originalTexts = [];       // flat array of paragraph texts
   let translatedTexts = [];     // flat array of translated texts
   let isTranslated = false;
+  let panelsVisible = false;    // whether the translation panels are currently shown
   let settings = {};
 
   const container = document.getElementById('viewer-container');
@@ -37,7 +41,7 @@
     const params = new URLSearchParams(window.location.search);
     const src = params.get('src');
     const id = params.get('id');
-    if (!src && !id) { loading.textContent = '缺少文件参数'; return; }
+    if (!src && !id) { loading.textContent = t('viewerMissingParam'); return; }
     if (id && id.startsWith('office_')) { await initOfficeFile(id); return; }
     await initPDF(src, id);
   }
@@ -47,19 +51,19 @@
     if (src) { pdfData = src; }
     else if (id) {
       pdfData = await loadFromBg(id);
-      if (!pdfData) { loading.textContent = '无法加载 PDF 数据'; return; }
+      if (!pdfData) { loading.textContent = t('viewerNoPdfData'); return; }
     }
 
     try {
       pdfDoc = await pdfjsLib.getDocument(pdfData).promise;
       totalPages = Math.min(pdfDoc.numPages, MAX_PAGES);
-      pageInfo.textContent = `${totalPages} pages`;
+      pageInfo.textContent = t('viewerPagesCount', totalPages);
       updateNav();
       await renderAllPages();
       loading.style.display = 'none';
       translateBtn.disabled = false;
     } catch (err) {
-      loading.textContent = 'PDF 解析失败: ' + err.message;
+      loading.textContent = t('viewerParseFailed', err.message);
     }
   }
 
@@ -72,7 +76,7 @@
     container.querySelectorAll('.pdf-page-wrapper').forEach(p => p.remove());
 
     for (let i = 1; i <= totalPages; i++) {
-      loading.textContent = `正在渲染... ${i}/${totalPages} 页`;
+      loading.textContent = t('viewerRendering', i, totalPages);
       const page = await pdfDoc.getPage(i);
       const viewport = page.getViewport({ scale: SCALE });
 
@@ -215,12 +219,12 @@
   toggleBtn.addEventListener('click', toggleTranslation);
 
   async function translateAll() {
-    if (!settings.apiKey) { alert('请先配置 API Key'); return; }
+    if (!settings.apiKey) { alert(t('errNoApiKey')); return; }
     settings.sourceLang = sourceLang.value;
     settings.targetLang = targetLang.value;
 
     translateBtn.disabled = true;
-    translateBtn.textContent = '翻译中...';
+    translateBtn.textContent = t('btnTranslating');
 
     translatedTexts = new Array(originalTexts.length).fill(null);
     const items = originalTexts.map((text, i) => ({ text: text.trim(), idx: i }))
@@ -249,7 +253,7 @@
           }
         } catch (err) { console.warn('Chunk error:', err); }
         completed += chunk.length;
-        translateBtn.textContent = `翻译中... ${Math.min(completed, items.length)}/${items.length}`;
+        translateBtn.textContent = t('viewerTranslatingProgress', Math.min(completed, items.length), items.length);
       }
     }
 
@@ -259,9 +263,10 @@
     buildTranslationPanels();
     container.querySelectorAll('.pdf-trans-panel').forEach(p => p.style.display = 'block');
     isTranslated = true;
-    translateBtn.textContent = (window.i18nGet ? window.i18nGet('translateBtn') : '翻译') + ' ✓';
+    panelsVisible = true;
+    translateBtn.textContent = t('viewerTranslate') + ' ✓';
     toggleBtn.style.display = 'inline-block';
-    toggleBtn.textContent = '↩ ' + (window.i18nGet ? window.i18nGet('viewerToggleOrig') : '原文');
+    toggleBtn.textContent = '↩ ' + t('viewerToggleOrig');
   }
 
   // Build translation panel content for each page
@@ -290,7 +295,7 @@
 
         const transDiv = document.createElement('div');
         transDiv.className = 'trans-text';
-        transDiv.textContent = trans || '(翻译失败)';
+        transDiv.textContent = trans || t('viewerTransFailed');
 
         row.appendChild(origDiv);
         row.appendChild(transDiv);
@@ -301,30 +306,26 @@
 
   function toggleTranslation() {
     if (!isTranslated || translatedTexts.length === 0) return;
-    const origLabel = window.i18nGet ? window.i18nGet('viewerToggleOrig') : '原文';
-    const transLabel = window.i18nGet ? window.i18nGet('viewerToggleTrans') : '译文';
-    const showingTrans = toggleBtn.textContent.includes(origLabel);
-    if (showingTrans) {
-      container.querySelectorAll('.pdf-trans-panel').forEach(p => p.style.display = 'none');
-      toggleBtn.textContent = '🌐 ' + transLabel;
-    } else {
-      container.querySelectorAll('.pdf-trans-panel').forEach(p => p.style.display = 'block');
-      toggleBtn.textContent = '↩ ' + origLabel;
-    }
+    panelsVisible = !panelsVisible;
+    container.querySelectorAll('.pdf-trans-panel')
+      .forEach(p => p.style.display = panelsVisible ? 'block' : 'none');
+    toggleBtn.textContent = panelsVisible
+      ? '↩ ' + t('viewerToggleOrig')
+      : '🌐 ' + t('viewerToggleTrans');
   }
 
   // ─── Office files ────────────────────────────────
 
   async function initOfficeFile(id) {
-    loading.textContent = '正在加载文件...';
+    loading.textContent = t('viewerLoadingFile');
     const data = await loadFromBg(id);
-    if (!data) { loading.textContent = '无法加载文件数据'; return; }
+    if (!data) { loading.textContent = t('viewerNoFileData'); return; }
     const text = new TextDecoder('utf-8').decode(data);
-    if (!text.trim()) { loading.textContent = '文件内容为空'; return; }
+    if (!text.trim()) { loading.textContent = t('viewerEmptyFile'); return; }
 
     const pars = text.split(/\n\s*\n/).filter(p => p.trim().length > 0);
     totalPages = 1;
-    pageInfo.textContent = `共 ${pars.length} 段`;
+    pageInfo.textContent = t('viewerSegments', pars.length);
     prevBtn.style.display = 'none'; nextBtn.style.display = 'none';
 
     const wrapper = document.createElement('div');

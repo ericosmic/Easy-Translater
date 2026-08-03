@@ -185,12 +185,12 @@ async function handlePDFTranslation(tabId, fileUrl) {
 
     // Simple text extraction from PDF (handles text-based PDFs)
     const text = await extractTextFromPDF(arrayBuffer);
-    if (!text.trim()) throw new Error('无法从PDF中提取文本，或PDF为扫描件');
+    if (!text.trim()) throw new Error(t('errPdfNoText'));
 
     const settings = await new Promise(resolve => chrome.storage.sync.get(null, resolve));
     return await translateText(text.slice(0, 10000), settings);
   } catch (err) {
-    throw new Error(`PDF处理失败: ${err.message}`);
+    throw new Error(t('errPdfFailed', err.message));
   }
 }
 

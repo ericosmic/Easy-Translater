@@ -1,9 +1,11 @@
 {
   "extName": { "message": "Easy Translator" },
   "extDesc": { "message": "ウェブページ、PDF、PPT、DOCXファイルをカスタムLLMで翻訳" },
+
   "tabTranslate": { "message": "翻訳" },
   "tabSettings": { "message": "設定" },
   "tabAbout": { "message": "概要" },
+
   "translatePage": { "message": "ページ全体を翻訳" },
   "translatePageDesc": { "message": "ページ上のすべてのテキストを翻訳に置き換え" },
   "translateFile": { "message": "現在のファイルを翻訳" },
@@ -13,41 +15,235 @@
   "autoDetect": { "message": "自動検出" },
   "translateBtn": { "message": "翻訳" },
   "swapLang": { "message": "言語を入れ替え" },
+
+  "modelConfigTitle": { "message": "モデル設定" },
   "providerLabel": { "message": "API プロバイダ" },
+  "providerOpenAI": { "message": "OpenAI 互換 (OpenAI / DeepSeek / Qwen / Zhipu など)" },
+  "providerOllama": { "message": "Ollama (ローカルモデル)" },
+  "ollamaHintPre": { "message": "環境変数" },
+  "ollamaHintPost": { "message": "を設定してから Ollama を起動してください。設定しないと CORS でブロックされます" },
   "apiUrlLabel": { "message": "API URL" },
   "apiKeyLabel": { "message": "API キー" },
+  "showHide": { "message": "表示/非表示" },
   "modelLabel": { "message": "モデル名" },
+  "refreshModels": { "message": "モデル更新" },
   "styleLabel": { "message": "翻訳スタイル" },
   "styleNatural": { "message": "自然で流暢" },
   "styleFormal": { "message": "フォーマル・専門的" },
+
+  "customPromptLabel": { "message": "カスタムプロンプト" },
+  "promptDefaultOption": { "message": "デフォルト (翻訳スタイルから自動生成)" },
+  "promptPlaceholder": { "message": "あなたはプロの翻訳者です..." },
+  "promptDefaultPlaceholder": { "message": "デフォルトのプロンプトを使用（「翻訳スタイル」から自動生成）" },
+  "promptSaveNew": { "message": "新しいテンプレートとして保存" },
+  "promptUpdate": { "message": "現在のテンプレートを更新" },
+  "promptDelete": { "message": "削除" },
+  "promptVarsLabel": { "message": "変数:" },
+  "promptVarSrc": { "message": "翻訳元の言語" },
+  "promptVarTgt": { "message": "翻訳先の言語" },
+  "promptBatchNote": { "message": "一括翻訳時には [#番号] マーカーの説明が自動的に追加されます" },
+  "promptNamePrompt": { "message": "テンプレート名：" },
+  "promptDefaultName": {
+    "message": "カスタム $N$",
+    "placeholders": { "n": { "content": "$1" } }
+  },
+  "promptConfirmDelete": { "message": "このテンプレートを削除しますか？" },
+  "statusPromptEmpty": { "message": "先にプロンプトの内容を入力してください" },
+  "statusPromptSaved": { "message": "✓ 新しいテンプレートを保存しました" },
+  "statusPromptUpdated": { "message": "✓ テンプレートを更新しました" },
+  "statusPromptDeleted": { "message": "✓ テンプレートを削除しました" },
+
   "pageTranslateLabel": { "message": "ページ翻訳" },
-  "shortcutHint": { "message": "テキストを選択して Alt+T でクイック翻訳" },
+  "shortcutLabel": { "message": "ショートカット" },
+  "shortcutHint": { "message": "テキストを選択して" },
+  "shortcutHint2": { "message": "でクイック翻訳" },
   "displayModeLabel": { "message": "表示モード" },
   "displayModeTooltip": { "message": "フローティングツールチップ" },
   "displayModeInline": { "message": "インライン置換" },
   "displayModeSidebar": { "message": "サイドバー" },
   "testBtn": { "message": "接続テスト" },
   "saveBtn": { "message": "設定を保存" },
-  "aboutTitle": { "message": "万能翻訳機 v1.0.0" },
+
+  "aboutTitle": { "message": "Easy Translator v1.0.0" },
   "aboutDesc": { "message": "ウェブページ、PDF、PPT、DOCXなどを翻訳します。" },
   "aboutModels": { "message": "複数のLLMバックエンドに対応：" },
+  "aboutModelOpenAI": { "message": "OpenAI GPT シリーズ" },
+  "aboutModelAnthropic": { "message": "Anthropic Claude シリーズ" },
+  "aboutModelGemini": { "message": "Google Gemini シリーズ" },
+  "aboutModelOthers": { "message": "DeepSeek、Qwen、Zhipu など" },
   "aboutUsage": { "message": "使い方：" },
   "aboutUsage1": { "message": "テキストを選択 → 右クリック → 翻訳" },
   "aboutUsage2": { "message": "テキストを選択 → Alt+T を押す" },
   "aboutUsage3": { "message": "拡張機能アイコンをクリックしてテキストを入力" },
   "aboutPDF": { "message": "PDF：自動的に翻訳ビューアーで開きます" },
-  "modelConfigTitle": { "message": "モデル設定" },
-  "showHide": { "message": "表示/非表示" },
-  "refreshModels": { "message": "モデル更新" },
-  "shortcutLabel": { "message": "ショートカット" },
+
+  "statusFetchingModels": { "message": "モデル一覧を取得中..." },
+  "statusModelsUpdated": { "message": "モデル一覧を更新しました" },
+  "statusModelsDefault": { "message": "デフォルトのモデル一覧を読み込みました" },
+  "statusNeedApiKey": { "message": "API キーを入力してください" },
+  "statusTesting": { "message": "接続をテスト中..." },
+  "statusTestOk": {
+    "message": "✓ 接続成功！テスト翻訳: $RESULT$",
+    "placeholders": { "result": { "content": "$1" } }
+  },
+  "statusTestFail": {
+    "message": "✗ 接続失敗: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  },
+  "statusSettingsSaved": { "message": "✓ 設定を保存しました" },
+  "statusInjectFailed": { "message": "翻訳スクリプトを挿入できません" },
+  "statusNotAFile": { "message": "現在のページは PDF または Office ファイルではありません" },
+  "btnTranslating": { "message": "翻訳中..." },
+  "btnTesting": { "message": "テスト中..." },
+
   "contextMenuSelection": { "message": "選択テキストを翻訳" },
   "contextMenuPage": { "message": "ページ全体を翻訳" },
+
+  "confirmReload": { "message": "翻訳拡張機能が更新されました。続けて使うにはページを再読み込みする必要があります。再読み込みしますか？" },
+  "floatBtnTranslate": { "message": "翻訳" },
+  "tooltipTitle": { "message": "翻訳結果" },
+  "loading": { "message": "翻訳中..." },
+  "actionCopy": { "message": "コピー" },
+  "actionSwitch": { "message": "言語を切り替え" },
+  "translateFailed": {
+    "message": "翻訳に失敗しました: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  },
+  "sidebarOriginal": { "message": "原文" },
+  "sidebarTranslation": { "message": "訳文" },
+  "alertNeedApiKey": { "message": "先に API キーを設定してください（拡張機能アイコン → 設定）" },
+
+  "bannerPreparing": { "message": "準備中..." },
+  "bannerScanning": { "message": "ページのテキストをスキャン中..." },
+  "bannerNoText": { "message": "翻訳できるテキストが見つかりません" },
+  "bannerCacheLoaded": { "message": "キャッシュされた翻訳を読み込みました" },
+  "bannerCacheLoadedCount": {
+    "message": "キャッシュされた翻訳を読み込みました ($COUNT$ 段落)",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "bannerProgressStart": {
+    "message": "翻訳中... 0/$TOTAL$  (キャッシュ $CACHED$, 未翻訳 $TOTAL2$)",
+    "placeholders": {
+      "total": { "content": "$1" },
+      "cached": { "content": "$2" },
+      "total2": { "content": "$3" }
+    }
+  },
+  "bannerProgress": {
+    "message": "翻訳中... $DONE$/$TOTAL$  ($CHUNK$/$CHUNKS$ ブロック)",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" },
+      "chunk": { "content": "$3" },
+      "chunks": { "content": "$4" }
+    }
+  },
+  "bannerDone": {
+    "message": "翻訳完了！$DONE$/$TOTAL$ 段落",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "bannerStopped": { "message": "翻訳を停止しました" },
+  "bannerReverted": { "message": "原文に戻しました" },
+  "bannerShowingTranslation": { "message": "訳文を表示中" },
+  "titleClose": { "message": "閉じる" },
+  "btnStop": { "message": "停止" },
+  "titleStop": { "message": "翻訳を停止" },
+  "btnShowTranslation": { "message": "訳文を表示" },
+  "btnShowOriginal": { "message": "原文" },
+
+  "pdfBtnTranslate": { "message": "PDFを翻訳" },
+  "pdfBtnTranslateThis": { "message": "このPDFを翻訳" },
+  "pdfNoText": { "message": "この PDF からテキストを抽出できません。スキャン文書または暗号化された文書の可能性があります。" },
+  "pdfFailedMark": { "message": "[翻訳失敗]" },
+  "pdfPanelTitle": { "message": "PDF 翻訳" },
+  "pdfPreparing": { "message": "翻訳の準備中..." },
+  "pdfProgress": {
+    "message": "翻訳の進捗: $DONE$/$TOTAL$",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "pdfDone": { "message": "✅ 翻訳完了" },
+
   "viewerTitle": { "message": "PDF 翻訳" },
   "viewerTranslate": { "message": "翻訳" },
-  "viewerToggleOrig": { "message": "原文表示" },
-  "viewerToggleTrans": { "message": "訳文表示" },
-  "viewerSourceLang": { "message": "翻訳元" },
-  "viewerTargetLang": { "message": "翻訳先" },
-  "viewerPageOf": { "message": "全" },
-  "viewerPages": { "message": "ページ" }
+  "viewerToggleOrig": { "message": "原文" },
+  "viewerToggleTrans": { "message": "訳文" },
+  "viewerMissingParam": { "message": "ファイルパラメータがありません" },
+  "viewerNoPdfData": { "message": "PDF データを読み込めません" },
+  "viewerParseFailed": {
+    "message": "PDF の解析に失敗しました: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  },
+  "viewerRendering": {
+    "message": "レンダリング中... $PAGE$/$TOTAL$ ページ",
+    "placeholders": {
+      "page": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "viewerTranslatingProgress": {
+    "message": "翻訳中... $DONE$/$TOTAL$",
+    "placeholders": {
+      "done": { "content": "$1" },
+      "total": { "content": "$2" }
+    }
+  },
+  "viewerTransFailed": { "message": "(翻訳失敗)" },
+  "viewerLoadingFile": { "message": "ファイルを読み込み中..." },
+  "viewerNoFileData": { "message": "ファイルデータを読み込めません" },
+  "viewerEmptyFile": { "message": "ファイルの内容が空です" },
+  "viewerSegments": {
+    "message": "全 $COUNT$ 段落",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+  "viewerPagesCount": {
+    "message": "全 $COUNT$ ページ",
+    "placeholders": { "count": { "content": "$1" } }
+  },
+
+  "promptSrcAuto": { "message": "原文" },
+  "promptBatch": {
+    "message": "あなたはプロの翻訳者です。以下の$SRC$を$TGT$に翻訳してください。テキストの各段落は「[#番号]」マーカーで始まります。各段落を一つずつ翻訳し、「[#番号]」マーカーと段落の順序は厳密にそのまま保ってください。段落を結合したり省略したりしないでください。翻訳結果のみを返し、余計な内容は含めないでください。",
+    "placeholders": {
+      "src": { "content": "$1" },
+      "tgt": { "content": "$2" }
+    }
+  },
+  "promptFormal": {
+    "message": "あなたはプロの翻訳者です。以下の$SRC$を$TGT$に翻訳してください。フォーマルで専門的な文体を使用してください。翻訳結果のみを返し、余計な内容は含めないでください。",
+    "placeholders": {
+      "src": { "content": "$1" },
+      "tgt": { "content": "$2" }
+    }
+  },
+  "promptNatural": {
+    "message": "あなたはプロの翻訳者です。以下の$SRC$を$TGT$に翻訳してください。自然で流暢な口語表現を使用してください。翻訳結果のみを返し、余計な内容は含めないでください。",
+    "placeholders": {
+      "src": { "content": "$1" },
+      "tgt": { "content": "$2" }
+    }
+  },
+  "promptBatchSuffix": { "message": "テキストの各段落は「[#番号]」マーカーで始まります。各段落を一つずつ翻訳し、「[#番号]」マーカーと段落の順序は厳密にそのまま保ってください。段落を結合したり省略したりしないでください。" },
+
+  "errNoApiKey": { "message": "先に API キーを設定してください" },
+  "errNoText": { "message": "翻訳するテキストがありません" },
+  "errApi": {
+    "message": "API エラー ($STATUS$): $BODY$",
+    "placeholders": {
+      "status": { "content": "$1" },
+      "body": { "content": "$2" }
+    }
+  },
+  "errOllamaConnect": { "message": "Ollama に接続できません。Ollama が起動しているか確認してください（ollama serve）" },
+  "errOllamaCors": { "message": "Ollama が拡張機能のリクエストを拒否しました（CORS）。Ollama の起動時に環境変数 OLLAMA_ORIGINS=* を設定してください" },
+  "errPdfNoText": { "message": "PDF からテキストを抽出できません。またはスキャン文書です" },
+  "errPdfFailed": {
+    "message": "PDF の処理に失敗しました: $ERROR$",
+    "placeholders": { "error": { "content": "$1" } }
+  }
 }
